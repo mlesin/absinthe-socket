@@ -30,6 +30,12 @@ type UnsubscribeResponse = void;
 
 type SubscriptionResponse = {subscriptionId: string} | {errors: Array<GqlError>};
 
+const createUnsubscribeError = (message: string) => new Error(`unsubscribe: ${message}`);
+
+const dataMessageEventName = "subscription:data";
+
+const isDataMessage = (message: Message<>) => message.event === dataMessageEventName;
+
 const onUnsubscribeSucceedCanceled = <Result, Variables>(
   absintheSocket: AbsintheSocket<Result, Variables>,
   notifier: Notifier<Result, Variables>
@@ -73,7 +79,7 @@ const onUnsubscribeSucceedActive = <Result, Variables>(
 const unsubscribeHandler: NotifierPushHandler<UnsubscribeResponse> = {
   onError: (absintheSocket, notifier, errorMessage) => abortNotifier(absintheSocket, notifier, createUnsubscribeError(errorMessage)),
 
-  onTimeout: (absintheSocket, notifier) => notifierNotifyCanceled(notifier, createErrorEvent(createUnsubscribeError("timeout"))),
+  onTimeout: (_absintheSocket, notifier) => notifierNotifyCanceled(notifier, createErrorEvent(createUnsubscribeError("timeout"))),
 
   onSucceed: (absintheSocket, notifier) => {
     if (notifier.isActive) {
@@ -101,28 +107,25 @@ export const onDataMessage = <Result, Variables>(
   }
 };
 
-export const subscribe = <Result, Variables>(
+export function subscribe<Result, Variables>(
   absintheSocket: AbsintheSocket<Result, Variables>,
   notifier: Notifier<Result, Variables>
-): AbsintheSocket<Result, Variables> => pushRequestUsing(absintheSocket, notifier, onSubscribe);
+): AbsintheSocket<Result, Variables> {
+  return pushRequestUsing(absintheSocket, notifier, onSubscribe);
+}
 
-export const unsubscribe = <Result, Variables>(
+export function unsubscribe<Result, Variables>(
   absintheSocket: AbsintheSocket<Result, Variables>,
   notifier: Notifier<Result, Variables>
-): AbsintheSocket<Result, Variables> =>
-  pushAbsintheUnsubscribeEvent(
+): AbsintheSocket<Result, Variables> {
+  return pushAbsintheUnsubscribeEvent(
     absintheSocket,
     refreshNotifier(absintheSocket, {
       ...notifier,
       requestStatus: requestStatuses.canceling,
     })
   );
-
-const createUnsubscribeError = (message: string) => new Error(`unsubscribe: ${message}`);
-
-const dataMessageEventName = "subscription:data";
-
-const isDataMessage = (message: Message<>) => message.event === dataMessageEventName;
+}
 
 export {isDataMessage};
 

@@ -9,7 +9,7 @@ export interface AbsintheSocket<Result, Variables> {
   phoenixSocket: PhoenixSocket;
 }
 
-export interface PushHandler<Response extends Record<string, unknown>> {
+export interface PushHandler<Response> {
   onError: (errorMessage: string) => void;
   onSucceed: (response: Response) => void;
   onTimeout: () => void;

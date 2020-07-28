@@ -1,10 +1,12 @@
-import {hasIn} from "@jumpn/utils-composite";
-import {Notifier} from "./types";
+// import {hasIn} from "@jumpn/utils-composite";
+// import {Notifier} from "./types";
 
-const findIndex = <Result, Variables>(
-  notifiers: Array<Notifier<Result, Variables>>,
-  key: string,
-  value: any // $FlowFixMe: flow is having some troubles to match hasIn signature (curry)
-) => notifiers.findIndex(hasIn([key], value));
+// type $Values<O extends Notifier<any, any>> = O[keyof O];
 
-export default findIndex;
+// const findIndex = <Result, Variables>(
+//   notifiers: Array<Notifier<Result, Variables>>,
+//   key: keyof Notifier<unknown, unknown>,
+//   value: $Values<Notifier<Result, Variables>> // $FlowFixMe: flow is having some troubles to match hasIn signature (curry)
+// ): number => notifiers.findIndex(hasIn([key], value));
+
+// export default findIndex;

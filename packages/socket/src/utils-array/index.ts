@@ -1,1 +1,1 @@
-export {default as arrayRemove} from "./arrayRemove";
+export * from "./arrayRemove";

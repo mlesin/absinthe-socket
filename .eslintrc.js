@@ -15,6 +15,7 @@ module.exports = {
     "default-case": ["off"],
     "no-use-before-define": ["off"],
     "@typescript-eslint/no-use-before-define": ["error", {functions: false}],
+    "@typescript-eslint/no-unused-vars": ["warn", {args: "all", argsIgnorePattern: "^_"}],
     "no-param-reassign": [
       "error",
       {
@@ -23,7 +24,7 @@ module.exports = {
     ],
     "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
     "no-shadow": 0,
-    "no-underscore-dangle": 0,
+    "no-underscore-dangle": "off",
     "no-unused-expressions": [
       "error",
       {

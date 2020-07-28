@@ -24,7 +24,7 @@ const getNotifier = <Result, Variables>(handlerName: keyof Observer<Result, Vari
 
 // const getHandlerName = ({name}: Event) => `on${name}`;
 
-const notifyAll = <Result, Variables>(observers: ReadonlyArray<Observer<Result, Variables>>, event: Event): void =>
+const notifyAll = <Result, Variables>(observers: ReadonlyArray<Observer<Result, Variables>>, event: Event<Result, Variables>): void =>
   observers.forEach(getNotifier<Result, Variables>(event.name, event.payload));
 
 export default notifyAll;

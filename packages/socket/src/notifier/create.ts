@@ -1,5 +1,4 @@
-import {getOperationType} from "@jumpn/utils-graphql";
-import {GqlRequest} from "../gql";
+import {getOperationType, GqlRequest} from "../utils-graphql";
 
 import requestStatuses from "./requestStatuses";
 

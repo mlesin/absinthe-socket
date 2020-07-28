@@ -1,7 +1,5 @@
 import {append} from "@jumpn/utils-array";
-
-import {GqlRequest} from "./gql";
-
+import {GqlRequest} from "./utils-graphql";
 import joinChannel from "./joinChannel";
 import notifierCreate from "./notifier/create";
 import notifierFind from "./notifier/find";

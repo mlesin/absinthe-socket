@@ -1,5 +1,5 @@
 import {Message} from "phoenix";
-import {gqlErrorsToString, GqlError, GqlResponse} from "./gql";
+import {gqlErrorsToString, GqlError, GqlResponse} from "./utils-graphql";
 
 import abortNotifier from "./abortNotifier";
 import notifierFind from "./notifier/find";

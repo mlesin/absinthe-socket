@@ -1,7 +1,5 @@
 import {$ElementType} from "utility-types";
-
-import {requestToCompat} from "@jumpn/utils-graphql";
-
+import {requestToCompat} from "./utils-graphql";
 import abortNotifier from "./abortNotifier";
 import notifierNotifyActive from "./notifier/notifyActive";
 import pushAbsintheEvent from "./pushAbsintheEvent";
@@ -42,6 +40,7 @@ const pushRequestUsing = <Result, Variables>(
   absintheSocket: AbsintheSocket<Result, Variables>,
   notifier: Notifier<Result, Variables>,
   onSucceed: $ElementType<NotifierPushHandler<any>, "onSucceed">
-) => pushAbsintheDocEvent(absintheSocket, setNotifierRequestStatusSending(absintheSocket, notifier), getNotifierPushHandler(onSucceed));
+): AbsintheSocket<Result, Variables> =>
+  pushAbsintheDocEvent(absintheSocket, setNotifierRequestStatusSending(absintheSocket, notifier), getNotifierPushHandler(onSucceed));
 
 export {pushRequestUsing as default, onError};

@@ -1,10 +1,7 @@
 import {map} from "@jumpn/utils-composite";
-
-import {GqlRequest} from "./gql";
-
+import {GqlRequest} from "./utils-graphql";
 import handlePush from "./handlePush";
 import notifierFind from "./notifier/find";
-
 import {AbsintheEvent} from "./absinthe-event/types";
 import {AbsintheSocket, NotifierPushHandler} from "./types";
 

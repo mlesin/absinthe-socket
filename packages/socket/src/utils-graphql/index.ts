@@ -5,6 +5,11 @@ export interface GqlRequest<Variables> {
   variables?: Variables;
 }
 
+export interface GqlRequestCompat<Variables> {
+  query: string;
+  variables?: Variables;
+}
+
 export interface GqlErrorLocation {
   line: number;
   column: number;

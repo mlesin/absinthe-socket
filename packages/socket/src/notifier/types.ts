@@ -1,7 +1,4 @@
-import {GqlOperationType, GqlRequest} from "../gql";
-
-// import eventNames, {EventName} from "./event/eventNames";
-
+import {GqlOperationType, GqlRequest} from "../utils-graphql";
 import {RequestStatus} from "./requestStatuses";
 
 export interface Observer<Result, Variables = void> {
@@ -27,7 +24,7 @@ interface EventWith<Name extends keyof Observer<unknown>, Payload = void> {
   payload: Payload;
 }
 
-export type StartEvent<Payload extends Notifier<any, any>> = EventWith<"onStart", Payload>;
+export type StartEvent<Result, Variables, Payload extends Notifier<Result, Variables>> = EventWith<"onStart", Payload>;
 
 export type ResultEvent<Result> = EventWith<"onResult", Result>;
 
@@ -37,4 +34,9 @@ export type CancelEvent = EventWith<"onCancel">;
 
 export type AbortEvent = EventWith<"onAbort", Error>;
 
-export type Event = AbortEvent | CancelEvent | ErrorEvent | ResultEvent<any> | StartEvent<any>;
+export type Event<Result, Variables> =
+  | AbortEvent
+  | CancelEvent
+  | ErrorEvent
+  | ResultEvent<Result>
+  | StartEvent<Result, Variables, Notifier<Result, Variables>>;

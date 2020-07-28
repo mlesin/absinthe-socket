@@ -1,4 +1,4 @@
-export {GqlOperationType, GqlRequest, GqlResponse} from "./gql";
+export {GqlOperationType, GqlRequest, GqlResponse} from "./utils-graphql";
 
 export {default as cancel} from "./cancel";
 export {default as create} from "./create";

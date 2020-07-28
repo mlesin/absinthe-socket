@@ -1,11 +1,12 @@
 {
-  "lerna": "2.5.1",
   "packages": [
-    "packages/*"
+    "packages/socket"
   ],
   "version": "independent",
   "npmClient": "yarn",
-  "npmClientArgs": ["--exact"],
+  "npmClientArgs": [
+    "--exact"
+  ],
   "useWorkspaces": true,
   "command": {
     "init": {

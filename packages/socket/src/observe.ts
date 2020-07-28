@@ -19,10 +19,10 @@ import {Notifier, Observer} from "./notifier/types";
  *   onResult: logEvent("result")
  * });
  */
-const observe = <Result, Variables extends void | Object>(
-  absintheSocket: AbsintheSocket,
+const observe = <Result, Variables>(
+  absintheSocket: AbsintheSocket<Result, Variables>,
   notifier: Notifier<Result, Variables>,
   observer: Observer<Result, Variables>
-) => refreshNotifier(absintheSocket, notifierObserve(notifier, observer));
+): Notifier<Result, Variables> => refreshNotifier(absintheSocket, notifierObserve(notifier, observer));
 
 export default observe;

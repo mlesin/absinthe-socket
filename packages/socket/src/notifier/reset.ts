@@ -3,7 +3,7 @@ import requestStatuses from "./requestStatuses";
 
 import {Notifier} from "./types";
 
-const reset = <Result, Variables>(notifier: Notifier<Result, Variables>) =>
+const reset = <Result, Variables>(notifier: Notifier<Result, Variables>): Notifier<Result, Variables> =>
   flushCanceled({
     ...notifier,
     isActive: true,

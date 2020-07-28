@@ -8,16 +8,17 @@ import observe from "./observe";
 import {AbsintheSocket} from "./types";
 import {Notifier, Observer} from "./notifier/types";
 
-type Options<Result, Variables extends void | Object> = {
+type Options<Result, Variables> = {
   onError: $ElementType<Observer<Result, Variables>, "onError">;
   onStart: $ElementType<Observer<Result, Variables>, "onStart">;
-  unsubscribe: (absintheSocket: AbsintheSocket, notifier?: Notifier<Result, Variables>, observer?: Observer<Result, Variables>) => void;
+  unsubscribe: (
+    absintheSocket: AbsintheSocket<Result, Variables>,
+    notifier?: Notifier<Result, Variables>,
+    observer?: Observer<Result, Variables>
+  ) => void;
 };
 
-// prettier-ignore
-const getUnsubscriber = (absintheSocket, {
-  request
-}, observer, unsubscribe) => () => {
+const getUnsubscriber = <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>, {request}, observer, unsubscribe) => () => {
   const notifier = notifierFind(absintheSocket.notifiers, "request", request);
 
   unsubscribe(absintheSocket, notifier, notifier ? observer : undefined);
@@ -31,7 +32,7 @@ const onResult = ({operationType}, observableObserver) => (result) => {
   }
 };
 
-const createObserver = (notifier, handlers, observableObserver) => ({
+const createObserver = <Result, Variables>(notifier: Notifier<Result, Variables>, handlers, observableObserver) => ({
   ...handlers,
   onAbort: observableObserver.error.bind(observableObserver),
   onResult: onResult(notifier, observableObserver),
@@ -66,8 +67,8 @@ const createObserver = (notifier, handlers, observableObserver) => ({
  *   unsubscribe: unobserveOrCancelIfNeeded
  * });
  */
-const toObservable = <Result, Variables extends void | Object>(
-  absintheSocket: AbsintheSocket,
+const toObservable = <Result, Variables>(
+  absintheSocket: AbsintheSocket<Result, Variables>,
   notifier: Notifier<Result, Variables>,
   {unsubscribe, ...handlers}: $Shape<Options<Result, Variables>> = {}
 ) =>

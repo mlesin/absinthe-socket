@@ -5,14 +5,14 @@ import {createErrorEvent} from "./notifier/event/eventCreators";
 
 import {AbsintheSocket} from "./types";
 
-const createChannelJoinError = (message) => new Error(`channel join: ${message}`);
+const createChannelJoinError = (message: string) => new Error(`channel join: ${message}`);
 
-const notifyErrorToAllActive = (absintheSocket, errorMessage) =>
+const notifyErrorToAllActive = <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>, errorMessage: string) =>
   absintheSocket.notifiers.forEach((notifier) => notifierNotifyActive(notifier, createErrorEvent(createChannelJoinError(errorMessage))));
 
 // join Push is reused and so the handler
 // https://github.com/phoenixframework/phoenix/blob/master/assets/js/phoenix.js#L356
-const createChannelJoinHandler = (absintheSocket) => ({
+const createChannelJoinHandler = <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>) => ({
   onError: (errorMessage: string) => notifyErrorToAllActive(absintheSocket, errorMessage),
 
   onSucceed: () => absintheSocket.notifiers.forEach((notifier) => pushRequest(absintheSocket, notifier)),
@@ -20,7 +20,7 @@ const createChannelJoinHandler = (absintheSocket) => ({
   onTimeout: () => notifyErrorToAllActive(absintheSocket, "timeout"),
 });
 
-const joinChannel = (absintheSocket: AbsintheSocket) => {
+const joinChannel = <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>): AbsintheSocket<Result, Variables> => {
   handlePush(absintheSocket.channel.join(), createChannelJoinHandler(absintheSocket));
 
   absintheSocket.channelJoinCreated = true;

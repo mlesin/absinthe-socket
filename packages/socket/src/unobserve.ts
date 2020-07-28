@@ -20,10 +20,10 @@ const ensureHasActiveObserver = <Result, Variables>(notifier: Notifier<Result, V
  * withAbsintheSocket.unobserve(absintheSocket, notifier, observer);
  */
 const unobserve = <Result, Variables>(
-  absintheSocket: AbsintheSocket,
+  absintheSocket: AbsintheSocket<Result, Variables>,
   notifier: Notifier<Result, Variables>,
   observer: Observer<Result, Variables>
-): AbsintheSocket =>
+): AbsintheSocket<Result, Variables> =>
   updateNotifiers(absintheSocket, notifierRefresh(notifierUnobserve(ensureHasActiveObserver(notifier, observer), observer)));
 
 export default unobserve;

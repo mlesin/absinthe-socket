@@ -2,10 +2,10 @@ import {Channel, Socket as PhoenixSocket} from "phoenix";
 
 import {Notifier, Observer} from "./notifier/types";
 
-export interface AbsintheSocket {
+export interface AbsintheSocket<Result, Variables> {
   channel: Channel;
   channelJoinCreated: boolean;
-  notifiers: Array<Notifier<any, any>>;
+  notifiers: Array<Notifier<Result, Variables>>;
   phoenixSocket: PhoenixSocket;
 }
 
@@ -15,10 +15,18 @@ export interface PushHandler<Response extends Record<string, unknown>> {
   onTimeout: () => void;
 }
 
-export interface NotifierPushHandler<Response extends Record<string, unknown>> {
-  onError: (absintheSocket: AbsintheSocket, notifier: Notifier<any, any>, errorMessage: string) => void;
-  onSucceed: (absintheSocket: AbsintheSocket, notifier: Notifier<any, any>, response: Response) => void;
-  onTimeout: (absintheSocket: AbsintheSocket, notifier: Notifier<any, any>) => void;
+export interface NotifierPushHandler<Response> {
+  onError: <Result, Variables>(
+    absintheSocket: AbsintheSocket<Result, Variables>,
+    notifier: Notifier<Result, Variables>,
+    errorMessage: string
+  ) => void;
+  onSucceed: <Result, Variables>(
+    absintheSocket: AbsintheSocket<Result, Variables>,
+    notifier: Notifier<Result, Variables>,
+    response: Response
+  ) => void;
+  onTimeout: <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>, notifier: Notifier<Result, Variables>) => void;
 }
 
 export {Observer};

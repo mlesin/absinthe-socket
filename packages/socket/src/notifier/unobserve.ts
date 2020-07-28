@@ -4,10 +4,7 @@ import {Notifier, Observer} from "./types";
 
 const removeObserver = (observers, observer) => arrayRemove(observers.indexOf(observer), 1, observers);
 
-const unobserve = <Result, Variables extends void | Object>(
-  {activeObservers, ...rest}: Notifier<Result, Variables>,
-  observer: Observer<Result, Variables>
-) => ({
+const unobserve = <Result, Variables>({activeObservers, ...rest}: Notifier<Result, Variables>, observer: Observer<Result, Variables>) => ({
   ...rest,
   activeObservers: removeObserver(activeObservers, observer),
 });

@@ -5,7 +5,7 @@ import {AbsintheSocket} from "./types";
 import {Notifier, Observer} from "./notifier/types";
 
 const doUnobserveOrCancel = <Result, Variables>(
-  absintheSocket: AbsintheSocket,
+  absintheSocket: AbsintheSocket<Result, Variables>,
   notifier: Notifier<Result, Variables>,
   observer: Observer<Result, Variables>
 ) => (notifier.activeObservers.length === 1 ? cancel(absintheSocket, notifier) : unobserve(absintheSocket, notifier, observer));
@@ -20,9 +20,9 @@ const doUnobserveOrCancel = <Result, Variables>(
  * withAbsintheSocket.unobserve(absintheSocket, notifier, observer);
  */
 const unobserveOrCancel = <Result, Variables>(
-  absintheSocket: AbsintheSocket,
+  absintheSocket: AbsintheSocket<Result, Variables>,
   notifier: Notifier<Result, Variables>,
   observer: Observer<Result, Variables>
-): AbsintheSocket => (notifier.isActive ? doUnobserveOrCancel(absintheSocket, notifier, observer) : absintheSocket);
+): AbsintheSocket<Result, Variables> => (notifier.isActive ? doUnobserveOrCancel(absintheSocket, notifier, observer) : absintheSocket);
 
 export default unobserveOrCancel;

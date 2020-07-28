@@ -1,8 +1,9 @@
-import {remove as arrayRemove} from "@jumpn/utils-array";
+import {arrayRemove} from "../utils-array";
 
 import {Notifier, Observer} from "./types";
 
-const removeObserver = (observers, observer) => arrayRemove(observers.indexOf(observer), 1, observers);
+const removeObserver = <Result, Variables>(observers: ReadonlyArray<Observer<Result, Variables>>, observer: Observer<Result, Variables>) =>
+  arrayRemove(observers.indexOf(observer), 1, observers);
 
 const unobserve = <Result, Variables>(
   {activeObservers, ...rest}: Notifier<Result, Variables>,

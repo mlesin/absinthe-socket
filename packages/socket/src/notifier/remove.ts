@@ -1,4 +1,4 @@
-import {remove as arrayRemove} from "@jumpn/utils-array";
+import {arrayRemove} from "../utils-array";
 import findIndex from "./findIndex";
 import {Notifier} from "./types";
 

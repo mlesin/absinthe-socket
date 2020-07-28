@@ -1,10 +1,9 @@
-import {getOperationType, GqlRequest} from "../utils-graphql";
-
+import {getOperationType, GqlRequest, GqlOperationType} from "../utils-graphql";
 import requestStatuses from "./requestStatuses";
 
 import {Notifier} from "./types";
 
-const createUsing = (request, operationType) => ({
+const createUsing = <Result, Variables>(request: GqlRequest<Variables>, operationType: GqlOperationType): Notifier<Result, Variables> => ({
   operationType,
   request,
   activeObservers: [],
@@ -14,7 +13,7 @@ const createUsing = (request, operationType) => ({
   subscriptionId: undefined,
 });
 
-const create = <Variables>(request: GqlRequest<Variables>): Notifier<any, $Subtype<Variables>> =>
+const create = <Result, Variables>(request: GqlRequest<Variables>): Notifier<Result, Variables> =>
   createUsing(request, getOperationType(request.operation));
 
 export default create;

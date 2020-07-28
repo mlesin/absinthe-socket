@@ -37,6 +37,7 @@
     "apollo-link": "^1.2.14",
     "core-js": "^3.6.5",
     "flow-static-land": "^0.2.8",
+    "fp-ts": "^2.7.1",
     "graphql": "^15.3.0",
     "zen-observable": "^0.8.15"
   },

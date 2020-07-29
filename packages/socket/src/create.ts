@@ -1,5 +1,5 @@
-import {Socket as PhoenixSocket, Message} from "phoenix";
-
+import {Socket as PhoenixSocket} from "phoenix";
+import {Message} from "./phoenix";
 import abortNotifier from "./abortNotifier";
 import joinChannel from "./joinChannel";
 import notifierNotify from "./notifier/notify";
@@ -13,7 +13,9 @@ import {createErrorEvent} from "./notifier/event/eventCreators";
 import {AbsintheSocket} from "./types";
 import {Notifier} from "./notifier/types";
 
-const onMessage = <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>) => (message: Message<>) => {
+const onMessage = <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>) => (
+  message: Message<withSubscription.SubscriptionPayload<unknown>>
+) => {
   if (withSubscription.isDataMessage(message)) {
     withSubscription.onDataMessage(absintheSocket, message);
   }

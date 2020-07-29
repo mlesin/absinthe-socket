@@ -1,4 +1,4 @@
-import {requestToCompat, GqlResponse} from "./utils-graphql";
+import {requestToCompat} from "./utils-graphql";
 import abortNotifier from "./abortNotifier";
 import notifierNotifyActive from "./notifier/notifyActive";
 import pushAbsintheEvent from "./pushAbsintheEvent";

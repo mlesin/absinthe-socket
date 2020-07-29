@@ -1,5 +1,5 @@
-import {Message} from "phoenix";
 import isDeepEqual from "fast-deep-equal";
+import {Message} from "./phoenix";
 import {gqlErrorsToString, GqlError, GqlResponse} from "./utils-graphql";
 import abortNotifier from "./abortNotifier";
 import notifierFlushCanceled from "./notifier/flushCanceled";
@@ -33,7 +33,7 @@ const createUnsubscribeError = (message: string) => new Error(`unsubscribe: ${me
 
 const dataMessageEventName = "subscription:data";
 
-const isDataMessage = (message: Message<>) => message.event === dataMessageEventName;
+const isDataMessage = (message: Message<unknown>): boolean => message.event === dataMessageEventName;
 
 const onUnsubscribeSucceedCanceled = <Result, Variables>(
   absintheSocket: AbsintheSocket<Result, Variables>,

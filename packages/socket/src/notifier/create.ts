@@ -10,7 +10,7 @@ const createUsing = <R, V>(request: GqlRequest<V>, operationType: GqlOperationTy
   canceledObservers: [],
   isActive: true,
   requestStatus: requestStatuses.pending,
-  subscriptionId: undefined,
+  subscriptionId: "",
 });
 
 const create = <R, V>(request: GqlRequest<V>): Notifier<R, V> => createUsing(request, getOperationType(request.operation));

@@ -16,7 +16,7 @@ export interface Notifier<R, V> {
   operationType: GqlOperationType;
   request: GqlRequest<V>;
   requestStatus: RequestStatus;
-  subscriptionId?: string;
+  subscriptionId: string;
 }
 
 interface EventWith<Name extends keyof Observer<unknown>, Payload> {

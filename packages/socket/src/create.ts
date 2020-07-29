@@ -13,7 +13,7 @@ import {createErrorEvent} from "./notifier/event/eventCreators";
 import {AbsintheSocket} from "./types";
 import {Notifier} from "./notifier/types";
 
-const onMessage = <R, V>(absintheSocket: AbsintheSocket<R, V>) => (message: Message<withSubscription.SubscriptionPayload<unknown>>) => {
+const onMessage = <R, V>(absintheSocket: AbsintheSocket<R, V>) => (message: Message<withSubscription.SubscriptionPayload<R>>) => {
   if (withSubscription.isDataMessage(message)) {
     withSubscription.onDataMessage(absintheSocket, message);
   }

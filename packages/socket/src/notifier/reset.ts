@@ -8,7 +8,7 @@ const reset = <R, V>(notifier: Notifier<R, V>): Notifier<R, V> =>
     ...notifier,
     isActive: true,
     requestStatus: requestStatuses.pending,
-    subscriptionId: undefined,
+    // subscriptionId: undefined,
   });
 
 export default reset;

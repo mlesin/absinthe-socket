@@ -27,7 +27,7 @@ type SubscriptionPayload<Data> = {
 // TODO: improve this type
 type UnsubscribeResponse = void;
 
-type SubscriptionResponse = {subscriptionId: string} | {errors: Array<GqlError>};
+type SubscriptionResponse = {subscriptionId?: string; errors?: Array<GqlError>};
 
 const createUnsubscribeError = (message: string) => new Error(`unsubscribe: ${message}`);
 
@@ -38,7 +38,7 @@ const isDataMessage = (message: Message<unknown>): boolean => message.event === 
 const onUnsubscribeSucceedCanceled = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) =>
   updateNotifiers(absintheSocket, notifierRemove(notifierFlushCanceled(notifier)));
 
-const onSubscribeSucceed = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, {subscriptionId}) => {
+const onSubscribeSucceed = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) => (subscriptionId: string) => {
   const subscribedNotifier = refreshNotifier(absintheSocket, {
     ...notifier,
     subscriptionId,
@@ -52,11 +52,11 @@ const onSubscribeSucceed = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier
   }
 };
 
-const onSubscribe = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, response: SubscriptionResponse) => {
+const onSubscribe = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) => (response: SubscriptionResponse) => {
   if (response.errors) {
-    onError(absintheSocket, notifier, gqlErrorsToString(response.errors));
-  } else {
-    onSubscribeSucceed(absintheSocket, notifier, response);
+    onError(absintheSocket, notifier)(gqlErrorsToString(response.errors));
+  } else if (response.subscriptionId) {
+    onSubscribeSucceed(absintheSocket, notifier)(response.subscriptionId);
   }
 };
 
@@ -64,9 +64,9 @@ const onUnsubscribeSucceedActive = <R, V>(absintheSocket: AbsintheSocket<R, V>, 
   subscribe(absintheSocket, refreshNotifier(absintheSocket, notifierReset(notifier)));
 
 const unsubscribeHandler: NotifierPushHandler = {
-  onError: (absintheSocket, notifier, errorMessage) => abortNotifier(absintheSocket, notifier, createUnsubscribeError(errorMessage)),
-  onTimeout: (_absintheSocket, notifier) => notifierNotifyCanceled(notifier, createErrorEvent(createUnsubscribeError("timeout"))),
-  onSucceed: (absintheSocket, notifier) => {
+  onError: (absintheSocket, notifier) => (errorMessage) => abortNotifier(absintheSocket, notifier, createUnsubscribeError(errorMessage)),
+  onTimeout: (_absintheSocket, notifier) => () => notifierNotifyCanceled(notifier, createErrorEvent(createUnsubscribeError("timeout"))),
+  onSucceed: (absintheSocket, notifier) => () => {
     if (notifier.isActive) {
       onUnsubscribeSucceedActive(absintheSocket, notifier);
     } else {
@@ -75,15 +75,16 @@ const unsubscribeHandler: NotifierPushHandler = {
   },
 };
 
-const pushAbsintheUnsubscribeEvent = <R, V>(absintheSocket: AbsintheSocket<R, V>, {request, subscriptionId}): AbsintheSocket<R, V> =>
-  pushAbsintheEvent(absintheSocket, request, unsubscribeHandler, createAbsintheUnsubscribeEvent({subscriptionId}));
+const pushAbsintheUnsubscribeEvent = <R, V>(
+  absintheSocket: AbsintheSocket<R, V>,
+  {request, subscriptionId}: Notifier<R, V>
+): AbsintheSocket<R, V> => pushAbsintheEvent(absintheSocket, request, unsubscribeHandler, createAbsintheUnsubscribeEvent({subscriptionId}));
 
-export const onDataMessage = <R, V>(absintheSocket: AbsintheSocket<R, V>, {payload}: Message<SubscriptionPayload<any>>): void => {
-  // const notifier = notifierFind(absintheSocket.notifiers, "subscriptionId", payload.subscriptionId);
+export const onDataMessage = <R, V>(absintheSocket: AbsintheSocket<R, V>, {payload}: Message<SubscriptionPayload<R>>): void => {
   const notifier = absintheSocket.notifiers.find((ntf) => isDeepEqual(ntf.subscriptionId, payload.subscriptionId));
 
   if (notifier) {
-    notifierNotifyResultEvent(notifier, payload.result);
+    notifierNotifyResultEvent(notifier, payload.result.data);
   }
 };
 
@@ -96,7 +97,7 @@ export function unsubscribe<R, V>(absintheSocket: AbsintheSocket<R, V>, notifier
     absintheSocket,
     refreshNotifier(absintheSocket, {
       ...notifier,
-      requestStatus: requestStatuses.canceling,
+      requestStatus: "canceling",
     })
   );
 }

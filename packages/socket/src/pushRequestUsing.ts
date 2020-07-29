@@ -23,10 +23,10 @@ const setNotifierRequestStatusSending = <R, V>(absintheSocket: AbsintheSocket<R,
 
 const createRequestError = (message: string) => new Error(`request: ${message}`);
 
-const onTimeout = <R, V>(_absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) =>
+const onTimeout = <R, V>(_absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) => () =>
   notifierNotifyActive(notifier, createErrorEvent(createRequestError("timeout")));
 
-const onError = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, errorMessage: string): AbsintheSocket<R, V> =>
+const onError = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) => (errorMessage: string): AbsintheSocket<R, V> =>
   abortNotifier(absintheSocket, notifier, createRequestError(errorMessage));
 
 const getNotifierPushHandler = (onSucceed: NotifierPushHandler["onSucceed"]): NotifierPushHandler => ({

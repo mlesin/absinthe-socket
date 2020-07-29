@@ -1,30 +1,32 @@
-// import {map} from "@jumpn/utils-composite";
 import isDeepEqual from "fast-deep-equal";
-import {GqlRequest, GqlResponse} from "./utils-graphql";
+import {GqlRequest} from "./utils-graphql";
 import handlePush from "./handlePush";
 import {AbsintheEvent} from "./absinthe-event/types";
 import {AbsintheSocket, NotifierPushHandler, PushHandler} from "./types";
 import {Notifier} from "./notifier/types";
 
-type Handler = <R, V>(arg0: AbsintheSocket<R, V>, arg1: Notifier<R, V>, ...args: unknown[]) => void;
+type Handler<R, V, T extends keyof PushHandler<unknown>> = (arg0: AbsintheSocket<R, V>, arg1: Notifier<R, V>) => PushHandler<R>[T];
 
-const getPushHandlerMethodGetter = <R, V>(absintheSocket: AbsintheSocket<R, V>, request: GqlRequest<V>) => (handle: Handler) => (
-  ...args: unknown[]
+const getPushHandlerMethodGetter = <R, V, T extends keyof PushHandler<unknown>>(
+  absintheSocket: AbsintheSocket<R, V>,
+  request: GqlRequest<V>
 ) => {
-  const notifier = absintheSocket.notifiers.find((ntf) => isDeepEqual(ntf.request, request));
-
-  if (notifier) {
-    handle(absintheSocket, notifier, ...args);
-  }
+  return (handle: Handler<R, V, T>) => {
+    const notifier = absintheSocket.notifiers.find((ntf) => isDeepEqual(ntf.request, request));
+    if (notifier) {
+      return handle(absintheSocket, notifier);
+    }
+    return () => {};
+  };
 };
 
 const getPushHandler = <R, V>(aSocket: AbsintheSocket<R, V>, request: GqlRequest<V>, npHandler: NotifierPushHandler): PushHandler<R> => {
   return {
-    ...npHandler,
-    onError: getPushHandlerMethodGetter(aSocket, request)(npHandler.onError),
+    onError: getPushHandlerMethodGetter<R, V, "onError">(aSocket, request)(npHandler.onError),
+    onSucceed: getPushHandlerMethodGetter<R, V, "onSucceed">(aSocket, request)(npHandler.onSucceed),
+    onTimeout: getPushHandlerMethodGetter<R, V, "onTimeout">(aSocket, request)(npHandler.onTimeout),
   };
 };
-// map(getPushHandlerMethodGetter(absintheSocket, request), notifierPushHandler);
 
 const pushAbsintheEvent = <R, V>(
   absintheSocket: AbsintheSocket<R, V>,

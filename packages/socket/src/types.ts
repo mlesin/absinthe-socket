@@ -17,9 +17,9 @@ export interface PushHandler<R> {
 }
 
 export interface NotifierPushHandler {
-  onError: <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, errorMessage: string) => void;
-  onSucceed: <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, response: GqlResponse<R>) => void;
-  onTimeout: <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) => void;
+  onError: <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) => PushHandler<R>["onError"];
+  onSucceed: <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) => PushHandler<R>["onSucceed"];
+  onTimeout: <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) => PushHandler<R>["onTimeout"];
 }
 
 export {Observer};

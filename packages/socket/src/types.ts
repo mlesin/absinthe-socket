@@ -3,31 +3,23 @@ import {Channel, Socket as PhoenixSocket} from "phoenix";
 import {Notifier, Observer} from "./notifier/types";
 import {GqlResponse} from "./utils-graphql";
 
-export interface AbsintheSocket<Result, Variables> {
+export interface AbsintheSocket<R, V> {
   channel: Channel;
   channelJoinCreated: boolean;
-  notifiers: Array<Notifier<Result, Variables>>;
+  notifiers: Array<Notifier<R, V>>;
   phoenixSocket: PhoenixSocket;
 }
 
-export interface PushHandler<Result> {
+export interface PushHandler<R> {
   onError: (errorMessage: string) => void;
-  onSucceed: (response: GqlResponse<Result>) => void;
+  onSucceed: (response: GqlResponse<R>) => void;
   onTimeout: () => void;
 }
 
 export interface NotifierPushHandler {
-  onError: <Result, Variables>(
-    absintheSocket: AbsintheSocket<Result, Variables>,
-    notifier: Notifier<Result, Variables>,
-    errorMessage: string
-  ) => void;
-  onSucceed: <Result, Variables>(
-    absintheSocket: AbsintheSocket<Result, Variables>,
-    notifier: Notifier<Result, Variables>,
-    response: GqlResponse<Result>
-  ) => void;
-  onTimeout: <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>, notifier: Notifier<Result, Variables>) => void;
+  onError: <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, errorMessage: string) => void;
+  onSucceed: <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, response: GqlResponse<R>) => void;
+  onTimeout: <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) => void;
 }
 
 export {Observer};

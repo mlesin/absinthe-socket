@@ -1,13 +1,13 @@
 export type GqlOperationType = "mutation" | "query" | "subscription";
 
-export interface GqlRequest<Variables> {
+export interface GqlRequest<V> {
   operation: GqlOperationType;
-  variables?: Variables;
+  variables?: V;
 }
 
-export interface GqlRequestCompat<Variables> {
+export interface GqlRequestCompat<V> {
   query: string;
-  variables?: Variables;
+  variables?: V;
 }
 
 export interface GqlErrorLocation {
@@ -20,7 +20,7 @@ export interface GqlError {
   locations?: Array<GqlErrorLocation>;
 }
 
-export interface GqlResponse<Data> {
-  data?: Data;
+export interface GqlResponse<R> {
+  data?: R;
   errors?: Array<GqlError>;
 }

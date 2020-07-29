@@ -6,12 +6,11 @@ import {AbsintheEvent} from "./absinthe-event/types";
 import {AbsintheSocket, NotifierPushHandler, PushHandler} from "./types";
 import {Notifier} from "./notifier/types";
 
-type Handler = <Result, Variables>(arg0: AbsintheSocket<Result, Variables>, arg1: Notifier<Result, Variables>, ...args: unknown[]) => void;
+type Handler = <R, V>(arg0: AbsintheSocket<R, V>, arg1: Notifier<R, V>, ...args: unknown[]) => void;
 
-const getPushHandlerMethodGetter = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  request: GqlRequest<Variables>
-) => (handle: Handler) => (...args: unknown[]) => {
+const getPushHandlerMethodGetter = <R, V>(absintheSocket: AbsintheSocket<R, V>, request: GqlRequest<V>) => (handle: Handler) => (
+  ...args: unknown[]
+) => {
   const notifier = absintheSocket.notifiers.find((ntf) => isDeepEqual(ntf.request, request));
 
   if (notifier) {
@@ -19,11 +18,11 @@ const getPushHandlerMethodGetter = <Result, Variables>(
   }
 };
 
-const getPushHandler = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  request: GqlRequest<Variables>,
+const getPushHandler = <R, V>(
+  absintheSocket: AbsintheSocket<R, V>,
+  request: GqlRequest<V>,
   notifierPushHandler: NotifierPushHandler
-): PushHandler<Result> => {
+): PushHandler<R> => {
   return {
     ...notifierPushHandler,
     onError: getPushHandlerMethodGetter(absintheSocket, request)(notifierPushHandler.onError),
@@ -31,13 +30,13 @@ const getPushHandler = <Result, Variables>(
 };
 // map(getPushHandlerMethodGetter(absintheSocket, request), notifierPushHandler);
 
-const pushAbsintheEvent = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  request: GqlRequest<Variables>,
+const pushAbsintheEvent = <R, V>(
+  absintheSocket: AbsintheSocket<R, V>,
+  request: GqlRequest<V>,
   notifierPushHandler: NotifierPushHandler,
   absintheEvent: AbsintheEvent
-): AbsintheSocket<Result, Variables> => {
-  handlePush<GqlResponse<Result>>(
+): AbsintheSocket<R, V> => {
+  handlePush<GqlResponse<R>>(
     absintheSocket.channel.push(absintheEvent.name, absintheEvent.payload),
     getPushHandler(absintheSocket, request, notifierPushHandler)
   );

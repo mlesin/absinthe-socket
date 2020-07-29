@@ -1,20 +1,20 @@
 import {GqlOperationType, GqlRequest} from "../utils-graphql";
 import {RequestStatus} from "./requestStatuses";
 
-export interface Observer<Result, Variables = void> {
+export interface Observer<R, V = void> {
   onAbort?: (error: Error) => void;
   onCancel?: () => void;
   onError?: (error: Error) => void;
-  onStart?: (notifier: Notifier<Result, Variables>) => void;
-  onResult?: (result: Result) => void;
+  onStart?: (notifier: Notifier<R, V>) => void;
+  onResult?: (result: R) => void;
 }
 
-export interface Notifier<Result, Variables> {
-  activeObservers: ReadonlyArray<Observer<Result, Variables>>;
-  canceledObservers: ReadonlyArray<Observer<Result, Variables>>;
+export interface Notifier<R, V> {
+  activeObservers: ReadonlyArray<Observer<R, V>>;
+  canceledObservers: ReadonlyArray<Observer<R, V>>;
   isActive: boolean;
   operationType: GqlOperationType;
-  request: GqlRequest<Variables>;
+  request: GqlRequest<V>;
   requestStatus: RequestStatus;
   subscriptionId?: string;
 }
@@ -24,9 +24,9 @@ interface EventWith<Name extends keyof Observer<unknown>, Payload = void> {
   payload: Payload;
 }
 
-export type StartEvent<Result, Variables, Payload extends Notifier<Result, Variables>> = EventWith<"onStart", Payload>;
+export type StartEvent<R, V, Payload extends Notifier<R, V>> = EventWith<"onStart", Payload>;
 
-export type ResultEvent<Result> = EventWith<"onResult", Result>;
+export type ResultEvent<R> = EventWith<"onResult", R>;
 
 export type ErrorEvent = EventWith<"onError", Error>;
 
@@ -34,9 +34,4 @@ export type CancelEvent = EventWith<"onCancel">;
 
 export type AbortEvent = EventWith<"onAbort", Error>;
 
-export type Event<Result, Variables> =
-  | AbortEvent
-  | CancelEvent
-  | ErrorEvent
-  | ResultEvent<Result>
-  | StartEvent<Result, Variables, Notifier<Result, Variables>>;
+export type Event<R, V> = AbortEvent | CancelEvent | ErrorEvent | ResultEvent<R> | StartEvent<R, V, Notifier<R, V>>;

@@ -2,7 +2,7 @@ import notifyActive from "./notifyActive";
 import {createStartEvent} from "./event/eventCreators";
 import {Notifier} from "./types";
 
-const notifyStartEvent = <Result, Variables>(notifier: Notifier<Result, Variables>): Notifier<Result, Variables> =>
-  notifyActive(notifier, createStartEvent<Result, Variables, Notifier<Result, Variables>>(notifier));
+const notifyStartEvent = <R, V>(notifier: Notifier<R, V>): Notifier<R, V> =>
+  notifyActive(notifier, createStartEvent<R, V, Notifier<R, V>>(notifier));
 
 export default notifyStartEvent;

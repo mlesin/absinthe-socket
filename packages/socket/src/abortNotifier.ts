@@ -6,10 +6,7 @@ import {createAbortEvent} from "./notifier/event/eventCreators";
 import {AbsintheSocket} from "./types";
 import {Notifier} from "./notifier/types";
 
-const abortNotifier = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  notifier: Notifier<Result, Variables>,
-  error: Error
-): AbsintheSocket<Result, Variables> => updateNotifiers(absintheSocket, notifierRemove(notifierNotify(notifier, createAbortEvent(error))));
+const abortNotifier = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, error: Error): AbsintheSocket<R, V> =>
+  updateNotifiers(absintheSocket, notifierRemove(notifierNotify(notifier, createAbortEvent(error))));
 
 export default abortNotifier;

@@ -13,9 +13,7 @@ import {createErrorEvent} from "./notifier/event/eventCreators";
 import {AbsintheSocket} from "./types";
 import {Notifier} from "./notifier/types";
 
-const onMessage = <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>) => (
-  message: Message<withSubscription.SubscriptionPayload<unknown>>
-) => {
+const onMessage = <R, V>(absintheSocket: AbsintheSocket<R, V>) => (message: Message<withSubscription.SubscriptionPayload<unknown>>) => {
   if (withSubscription.isDataMessage(message)) {
     withSubscription.onDataMessage(absintheSocket, message);
   }
@@ -23,18 +21,13 @@ const onMessage = <Result, Variables>(absintheSocket: AbsintheSocket<Result, Var
 
 const createConnectionCloseError = () => new Error("connection: close");
 
-const notifyConnectionCloseError = <Result, Variables>(notifier: Notifier<Result, Variables>) =>
+const notifyConnectionCloseError = <R, V>(notifier: Notifier<R, V>) =>
   notifierNotify(notifier, createErrorEvent(createConnectionCloseError()));
 
-const notifierOnConnectionCloseCanceled = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  notifier: Notifier<Result, Variables>
-) => updateNotifiers(absintheSocket, notifierRemove(notifyConnectionCloseError(notifier)));
+const notifierOnConnectionCloseCanceled = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) =>
+  updateNotifiers(absintheSocket, notifierRemove(notifyConnectionCloseError(notifier)));
 
-const notifierOnConnectionCloseActive = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  notifier: Notifier<Result, Variables>
-) => {
+const notifierOnConnectionCloseActive = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) => {
   if (notifier.operationType === "mutation") {
     abortNotifier(absintheSocket, notifier, createConnectionCloseError());
   } else {
@@ -42,9 +35,7 @@ const notifierOnConnectionCloseActive = <Result, Variables>(
   }
 };
 
-const notifierOnConnectionClose = <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>) => (
-  notifier: Notifier<Result, Variables>
-) => {
+const notifierOnConnectionClose = <R, V>(absintheSocket: AbsintheSocket<R, V>) => (notifier: Notifier<R, V>) => {
   if (notifier.isActive) {
     notifierOnConnectionCloseActive(absintheSocket, notifier);
   } else {
@@ -52,13 +43,13 @@ const notifierOnConnectionClose = <Result, Variables>(absintheSocket: AbsintheSo
   }
 };
 
-const onConnectionClose = <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>) => () =>
+const onConnectionClose = <R, V>(absintheSocket: AbsintheSocket<R, V>) => () =>
   absintheSocket.notifiers.forEach(notifierOnConnectionClose(absintheSocket));
 
-const shouldJoinChannel = <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>) =>
+const shouldJoinChannel = <R, V>(absintheSocket: AbsintheSocket<R, V>) =>
   !absintheSocket.channelJoinCreated && absintheSocket.notifiers.length > 0;
 
-const onConnectionOpen = <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>) => () => {
+const onConnectionOpen = <R, V>(absintheSocket: AbsintheSocket<R, V>) => () => {
   if (shouldJoinChannel(absintheSocket)) {
     joinChannel(absintheSocket);
   }
@@ -77,8 +68,8 @@ const absintheChannelName = "__absinthe__:control";
  *   new PhoenixSocket("ws://localhost:4000/socket")
  * );
  */
-const create = <Result, Variables>(phoenixSocket: PhoenixSocket): AbsintheSocket<Result, Variables> => {
-  const absintheSocket: AbsintheSocket<Result, Variables> = {
+const create = <R, V>(phoenixSocket: PhoenixSocket): AbsintheSocket<R, V> => {
+  const absintheSocket: AbsintheSocket<R, V> = {
     phoenixSocket,
     channel: phoenixSocket.channel(absintheChannelName),
     channelJoinCreated: false,

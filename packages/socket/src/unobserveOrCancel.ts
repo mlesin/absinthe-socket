@@ -4,11 +4,8 @@ import unobserve from "./unobserve";
 import {AbsintheSocket} from "./types";
 import {Notifier, Observer} from "./notifier/types";
 
-const doUnobserveOrCancel = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  notifier: Notifier<Result, Variables>,
-  observer: Observer<Result, Variables>
-) => (notifier.activeObservers.length === 1 ? cancel(absintheSocket, notifier) : unobserve(absintheSocket, notifier, observer));
+const doUnobserveOrCancel = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, observer: Observer<R, V>) =>
+  notifier.activeObservers.length === 1 ? cancel(absintheSocket, notifier) : unobserve(absintheSocket, notifier, observer);
 
 /**
  * Cancels notifier if there are no more observers apart from the one given, or
@@ -19,10 +16,10 @@ const doUnobserveOrCancel = <Result, Variables>(
  *
  * withAbsintheSocket.unobserve(absintheSocket, notifier, observer);
  */
-const unobserveOrCancel = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  notifier: Notifier<Result, Variables>,
-  observer: Observer<Result, Variables>
-): AbsintheSocket<Result, Variables> => (notifier.isActive ? doUnobserveOrCancel(absintheSocket, notifier, observer) : absintheSocket);
+const unobserveOrCancel = <R, V>(
+  absintheSocket: AbsintheSocket<R, V>,
+  notifier: Notifier<R, V>,
+  observer: Observer<R, V>
+): AbsintheSocket<R, V> => (notifier.isActive ? doUnobserveOrCancel(absintheSocket, notifier, observer) : absintheSocket);
 
 export default unobserveOrCancel;

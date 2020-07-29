@@ -2,13 +2,10 @@ import {readonlyArrayRemove} from "../utils-array";
 
 import {Notifier, Observer} from "./types";
 
-const removeObserver = <Result, Variables>(observers: ReadonlyArray<Observer<Result, Variables>>, observer: Observer<Result, Variables>) =>
+const removeObserver = <R, V>(observers: ReadonlyArray<Observer<R, V>>, observer: Observer<R, V>) =>
   readonlyArrayRemove(observers.indexOf(observer), observers);
 
-const unobserve = <Result, Variables>(
-  {activeObservers, ...rest}: Notifier<Result, Variables>,
-  observer: Observer<Result, Variables>
-): Notifier<Result, Variables> => ({
+const unobserve = <R, V>({activeObservers, ...rest}: Notifier<R, V>, observer: Observer<R, V>): Notifier<R, V> => ({
   ...rest,
   activeObservers: removeObserver(activeObservers, observer),
 });

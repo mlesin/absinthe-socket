@@ -1,10 +1,6 @@
 import {Notifier} from "./types";
 
-const cancel = <Result, Variables>({
-  activeObservers,
-  canceledObservers,
-  ...rest
-}: Notifier<Result, Variables>): Notifier<Result, Variables> => ({
+const cancel = <R, V>({activeObservers, canceledObservers, ...rest}: Notifier<R, V>): Notifier<R, V> => ({
   ...rest,
   isActive: false,
   activeObservers: [],

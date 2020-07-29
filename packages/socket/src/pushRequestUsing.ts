@@ -12,16 +12,13 @@ import {Notifier} from "./notifier/types";
 
 type $ElementType<T extends {[P in K & unknown]: unknown}, K extends keyof T | number> = T[K];
 
-const pushAbsintheDocEvent = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  {request}: Notifier<Result, Variables>,
+const pushAbsintheDocEvent = <R, V>(
+  absintheSocket: AbsintheSocket<R, V>,
+  {request}: Notifier<R, V>,
   notifierPushHandler: NotifierPushHandler
 ) => pushAbsintheEvent(absintheSocket, request, notifierPushHandler, createAbsintheDocEvent(requestToCompat(request)));
 
-const setNotifierRequestStatusSending = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  notifier: Notifier<Result, Variables>
-) =>
+const setNotifierRequestStatusSending = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) =>
   refreshNotifier(absintheSocket, {
     ...notifier,
     requestStatus: requestStatuses.sending,
@@ -29,26 +26,23 @@ const setNotifierRequestStatusSending = <Result, Variables>(
 
 const createRequestError = (message: string) => new Error(`request: ${message}`);
 
-const onTimeout = <Result, Variables>(_absintheSocket: AbsintheSocket<Result, Variables>, notifier: Notifier<Result, Variables>) =>
+const onTimeout = <R, V>(_absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) =>
   notifierNotifyActive(notifier, createErrorEvent(createRequestError("timeout")));
 
-const onError = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  notifier: Notifier<Result, Variables>,
-  errorMessage: string
-): AbsintheSocket<Result, Variables> => abortNotifier(absintheSocket, notifier, createRequestError(errorMessage));
+const onError = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, errorMessage: string): AbsintheSocket<R, V> =>
+  abortNotifier(absintheSocket, notifier, createRequestError(errorMessage));
 
-const getNotifierPushHandler = <Result>(onSucceed: NotifierPushHandler["onSucceed"]): NotifierPushHandler => ({
+const getNotifierPushHandler = (onSucceed: NotifierPushHandler["onSucceed"]): NotifierPushHandler => ({
   onError,
   onSucceed,
   onTimeout,
 });
 
-const pushRequestUsing = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  notifier: Notifier<Result, Variables>,
+const pushRequestUsing = <R, V>(
+  absintheSocket: AbsintheSocket<R, V>,
+  notifier: Notifier<R, V>,
   onSucceed: $ElementType<NotifierPushHandler, "onSucceed">
-): AbsintheSocket<Result, Variables> =>
+): AbsintheSocket<R, V> =>
   pushAbsintheDocEvent(absintheSocket, setNotifierRequestStatusSending(absintheSocket, notifier), getNotifierPushHandler(onSucceed));
 
 export {pushRequestUsing as default, onError};

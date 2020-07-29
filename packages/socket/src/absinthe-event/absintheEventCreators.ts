@@ -9,9 +9,7 @@ export const createAbsintheUnsubscribeEvent = (payload: $ElementType<AbsintheUns
   name: absintheEventNames.unsubscribe,
 });
 
-export const createAbsintheDocEvent = <Variables>(
-  payload: $ElementType<AbsintheDocEvent<Variables>, "payload">
-): AbsintheDocEvent<Variables> => ({
+export const createAbsintheDocEvent = <V>(payload: $ElementType<AbsintheDocEvent<V>, "payload">): AbsintheDocEvent<V> => ({
   payload,
   name: absintheEventNames.doc,
 });

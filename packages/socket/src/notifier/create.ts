@@ -3,7 +3,7 @@ import requestStatuses from "./requestStatuses";
 
 import {Notifier} from "./types";
 
-const createUsing = <Result, Variables>(request: GqlRequest<Variables>, operationType: GqlOperationType): Notifier<Result, Variables> => ({
+const createUsing = <R, V>(request: GqlRequest<V>, operationType: GqlOperationType): Notifier<R, V> => ({
   operationType,
   request,
   activeObservers: [],
@@ -13,7 +13,6 @@ const createUsing = <Result, Variables>(request: GqlRequest<Variables>, operatio
   subscriptionId: undefined,
 });
 
-const create = <Result, Variables>(request: GqlRequest<Variables>): Notifier<Result, Variables> =>
-  createUsing(request, getOperationType(request.operation));
+const create = <R, V>(request: GqlRequest<V>): Notifier<R, V> => createUsing(request, getOperationType(request.operation));
 
 export default create;

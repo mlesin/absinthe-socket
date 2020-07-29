@@ -2,12 +2,9 @@ import observerNotifyAll from "./observer/notifyAll";
 
 import {Event, Notifier} from "./types";
 
-const getObservers = <Result, Variables>({activeObservers, canceledObservers}: Notifier<Result, Variables>) => [
-  ...activeObservers,
-  ...canceledObservers,
-];
+const getObservers = <R, V>({activeObservers, canceledObservers}: Notifier<R, V>) => [...activeObservers, ...canceledObservers];
 
-const notify = <Result, Variables>(notifier: Notifier<Result, Variables>, event: Event<Result, Variables>): Notifier<Result, Variables> => {
+const notify = <R, V>(notifier: Notifier<R, V>, event: Event<R, V>): Notifier<R, V> => {
   observerNotifyAll(getObservers(notifier), event);
 
   return notifier;

@@ -1,7 +1,7 @@
 import {Push} from "phoenix";
 import {PushHandler} from "./types";
 
-const handlePush = <Result>(push: Push, handler: PushHandler<Result>): Push =>
+const handlePush = <R>(push: Push, handler: PushHandler<R>): Push =>
   push.receive("ok", handler.onSucceed).receive("error", handler.onError).receive("timeout", handler.onTimeout);
 
 export default handlePush;

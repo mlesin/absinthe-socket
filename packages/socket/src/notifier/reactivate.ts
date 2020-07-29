@@ -1,6 +1,5 @@
 import {Notifier} from "./types";
 
-const reactivate = <Result, Variables>(notifier: Notifier<Result, Variables>): Notifier<Result, Variables> =>
-  notifier.isActive ? notifier : {...notifier, isActive: true};
+const reactivate = <R, V>(notifier: Notifier<R, V>): Notifier<R, V> => (notifier.isActive ? notifier : {...notifier, isActive: true});
 
 export default reactivate;

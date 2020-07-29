@@ -6,31 +6,23 @@ import {Notifier, Observer} from "./notifier/types";
 
 type $ElementType<T extends {[P in K & unknown]?: unknown}, K extends keyof T | number> = T[K];
 
-type Options<Result, Variables> = {
-  onError: $ElementType<Observer<Result, Variables>, "onError">;
-  onStart: $ElementType<Observer<Result, Variables>, "onStart">;
-  unsubscribe: (
-    absintheSocket: AbsintheSocket<Result, Variables>,
-    notifier?: Notifier<Result, Variables>,
-    observer?: Observer<Result, Variables>
-  ) => void;
+type Options<R, V> = {
+  onError: $ElementType<Observer<R, V>, "onError">;
+  onStart: $ElementType<Observer<R, V>, "onStart">;
+  unsubscribe: (absintheSocket: AbsintheSocket<R, V>, notifier?: Notifier<R, V>, observer?: Observer<R, V>) => void;
 };
 
-const getUnsubscriber = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  {request}: Notifier<Result, Variables>,
-  observer: Observer<Result, Variables>,
-  unsubscribe: Options<Result, Variables>["unsubscribe"]
+const getUnsubscriber = <R, V>(
+  absintheSocket: AbsintheSocket<R, V>,
+  {request}: Notifier<R, V>,
+  observer: Observer<R, V>,
+  unsubscribe: Options<R, V>["unsubscribe"]
 ) => () => {
   const notifier = absintheSocket.notifiers.find((ntf) => isDeepEqual(ntf.request, request));
-
   unsubscribe(absintheSocket, notifier, notifier ? observer : undefined);
 };
 
-const onResult = <T, Result, Variables>(
-  {operationType}: Notifier<Result, Variables>,
-  observableObserver: ZenObservable.SubscriptionObserver<T>
-) => (result: T) => {
+const onResult = <R, V>({operationType}: Notifier<R, V>, observableObserver: ZenObservable.SubscriptionObserver<R>) => (result: R) => {
   observableObserver.next(result);
 
   if (operationType !== "subscription") {
@@ -38,11 +30,11 @@ const onResult = <T, Result, Variables>(
   }
 };
 
-const createObserver = <Result, Variables>(
-  notifier: Notifier<Result, Variables>,
-  handlers: Omit<Options<Result, Variables>, "unsubscribe">,
-  observableObserver: ZenObservable.SubscriptionObserver<Result>
-): Observer<Result, Variables> => ({
+const createObserver = <R, V>(
+  notifier: Notifier<R, V>,
+  handlers: Omit<Options<R, V>, "unsubscribe">,
+  observableObserver: ZenObservable.SubscriptionObserver<R>
+): Observer<R, V> => ({
   ...handlers,
   onAbort: observableObserver.error.bind(observableObserver),
   onResult: onResult(notifier, observableObserver),
@@ -52,10 +44,10 @@ const createObserver = <Result, Variables>(
  * Creates an Observable that will follow the given notifier
  *
  * @param {AbsintheSocket} absintheSocket
- * @param {Notifier<Result, Variables>} notifier
+ * @param {Notifier<R, V>} notifier
  * @param {Object} [options]
  * @param {function(error: Error): undefined} [options.onError]
- * @param {function(notifier: Notifier<Result, Variables>): undefined} [options.onStart]
+ * @param {function(notifier: Notifier<R, V>): undefined} [options.onStart]
  * @param {function(): undefined} [options.unsubscribe]
  *
  * @return {Observable}
@@ -77,12 +69,12 @@ const createObserver = <Result, Variables>(
  *   unsubscribe: unobserveOrCancelIfNeeded
  * });
  */
-const toObservable = <Result, Variables>(
-  absintheSocket: AbsintheSocket<Result, Variables>,
-  notifier: Notifier<Result, Variables>,
-  {unsubscribe, ...handlers}: Options<Result, Variables>
-): Observable<Result> =>
-  new Observable<Result>((observableObserver: ZenObservable.SubscriptionObserver<Result>) => {
+const toObservable = <R, V>(
+  absintheSocket: AbsintheSocket<R, V>,
+  notifier: Notifier<R, V>,
+  {unsubscribe, ...handlers}: Options<R, V>
+): Observable<R> =>
+  new Observable<R>((observableObserver: ZenObservable.SubscriptionObserver<R>) => {
     const observer = createObserver(notifier, handlers, observableObserver);
 
     observe(absintheSocket, notifier, observer);

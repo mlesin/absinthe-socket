@@ -1,8 +1,6 @@
 import {Event, Observer, Notifier} from "../types";
 
-const getNotifier = <Result, Variables>(handlerName: keyof Observer<Result, Variables>, payload: unknown) => (
-  observer: Observer<Result, Variables>
-) => {
+const getNotifier = <R, V>(handlerName: keyof Observer<R, V>, payload: unknown) => (observer: Observer<R, V>) => {
   switch (handlerName) {
     case "onAbort":
       observer.onAbort?.(payload as Error);
@@ -14,17 +12,17 @@ const getNotifier = <Result, Variables>(handlerName: keyof Observer<Result, Vari
       observer.onError?.(payload as Error);
       break;
     case "onResult":
-      observer.onResult?.(payload as Result);
+      observer.onResult?.(payload as R);
       break;
     case "onStart":
-      observer.onStart?.(payload as Notifier<Result, Variables>);
+      observer.onStart?.(payload as Notifier<R, V>);
       break;
   }
 };
 
 // const getHandlerName = ({name}: Event) => `on${name}`;
 
-const notifyAll = <Result, Variables>(observers: ReadonlyArray<Observer<Result, Variables>>, event: Event<Result, Variables>): void =>
-  observers.forEach(getNotifier<Result, Variables>(event.name, event.payload));
+const notifyAll = <R, V>(observers: ReadonlyArray<Observer<R, V>>, event: Event<R, V>): void =>
+  observers.forEach(getNotifier<R, V>(event.name, event.payload));
 
 export default notifyAll;

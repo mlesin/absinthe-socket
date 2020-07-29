@@ -1,8 +1,8 @@
-import {append} from "@jumpn/utils-array";
+import isDeepEqual from "fast-deep-equal";
+import {arrayAppend} from "./utils-array";
 import {GqlRequest} from "./utils-graphql";
 import joinChannel from "./joinChannel";
 import notifierCreate from "./notifier/create";
-import notifierFind from "./notifier/find";
 import notifierFlushCanceled from "./notifier/flushCanceled";
 import notifierReactivate from "./notifier/reactivate";
 import pushRequest from "./pushRequest";
@@ -25,7 +25,7 @@ const connectOrJoinChannel = <R, V>(absintheSocket: AbsintheSocket<R, V>) => {
 const sendNew = <R, V>(absintheSocket: AbsintheSocket<R, V>, request: GqlRequest<V>) => {
   const notifier = notifierCreate<R, V>(request);
 
-  updateNotifiers(absintheSocket, append([notifier]));
+  updateNotifiers(absintheSocket, arrayAppend([notifier]));
 
   if (absintheSocket.channelJoinCreated) {
     pushRequest(absintheSocket, notifier);
@@ -48,8 +48,7 @@ const updateIfCanceled = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: 
   notifier.isActive ? notifier : updateCanceled(absintheSocket, notifier);
 
 const getExistentIfAny = <R, V>(absintheSocket: AbsintheSocket<R, V>, request: GqlRequest<V>) => {
-  const notifier = notifierFind(absintheSocket.notifiers, "request", request);
-
+  const notifier = absintheSocket.notifiers.find((ntf) => isDeepEqual(ntf.request, request));
   return notifier && updateIfCanceled(absintheSocket, notifier);
 };
 

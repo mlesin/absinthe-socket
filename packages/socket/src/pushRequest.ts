@@ -19,7 +19,7 @@ const setNotifierRequestStatusSent = <R, V>(absintheSocket: AbsintheSocket<R, V>
 const onQueryOrMutationSucceed = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, response: GqlResponse<R>) =>
   updateNotifiers(
     absintheSocket,
-    notifierRemove(notifierNotifyResultEvent(setNotifierRequestStatusSent(absintheSocket, notifier), response))
+    notifierRemove(notifierNotifyResultEvent(setNotifierRequestStatusSent(absintheSocket, notifier), response.data))
   );
 
 const pushQueryOrMutation = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>) =>

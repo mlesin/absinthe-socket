@@ -18,14 +18,10 @@ const getPushHandlerMethodGetter = <R, V>(absintheSocket: AbsintheSocket<R, V>, 
   }
 };
 
-const getPushHandler = <R, V>(
-  absintheSocket: AbsintheSocket<R, V>,
-  request: GqlRequest<V>,
-  notifierPushHandler: NotifierPushHandler
-): PushHandler<R> => {
+const getPushHandler = <R, V>(aSocket: AbsintheSocket<R, V>, request: GqlRequest<V>, npHandler: NotifierPushHandler): PushHandler<R> => {
   return {
-    ...notifierPushHandler,
-    onError: getPushHandlerMethodGetter(absintheSocket, request)(notifierPushHandler.onError),
+    ...npHandler,
+    onError: getPushHandlerMethodGetter(aSocket, request)(npHandler.onError),
   };
 };
 // map(getPushHandlerMethodGetter(absintheSocket, request), notifierPushHandler);
@@ -36,7 +32,7 @@ const pushAbsintheEvent = <R, V>(
   notifierPushHandler: NotifierPushHandler,
   absintheEvent: AbsintheEvent
 ): AbsintheSocket<R, V> => {
-  handlePush<GqlResponse<R>>(
+  handlePush(
     absintheSocket.channel.push(absintheEvent.name, absintheEvent.payload),
     getPushHandler(absintheSocket, request, notifierPushHandler)
   );

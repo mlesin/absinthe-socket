@@ -19,9 +19,9 @@ export interface Notifier<R, V> {
   subscriptionId?: string;
 }
 
-interface EventWith<Name extends keyof Observer<unknown>, Payload = void> {
-  name: Name;
-  payload: Payload;
+interface EventWith<Name extends keyof Observer<unknown>, Payload> {
+  tag: Name;
+  payload?: Payload;
 }
 
 export type StartEvent<R, V, Payload extends Notifier<R, V>> = EventWith<"onStart", Payload>;
@@ -30,7 +30,7 @@ export type ResultEvent<R> = EventWith<"onResult", R>;
 
 export type ErrorEvent = EventWith<"onError", Error>;
 
-export type CancelEvent = EventWith<"onCancel">;
+export type CancelEvent = EventWith<"onCancel", undefined>;
 
 export type AbortEvent = EventWith<"onAbort", Error>;
 

@@ -6,11 +6,8 @@ import refreshNotifier from "./refreshNotifier";
 import requestStatuses from "./notifier/requestStatuses";
 import {createAbsintheDocEvent} from "./absinthe-event/absintheEventCreators";
 import {createErrorEvent} from "./notifier/event/eventCreators";
-
 import {AbsintheSocket, NotifierPushHandler} from "./types";
 import {Notifier} from "./notifier/types";
-
-type $ElementType<T extends {[P in K & unknown]: unknown}, K extends keyof T | number> = T[K];
 
 const pushAbsintheDocEvent = <R, V>(
   absintheSocket: AbsintheSocket<R, V>,
@@ -41,7 +38,7 @@ const getNotifierPushHandler = (onSucceed: NotifierPushHandler["onSucceed"]): No
 const pushRequestUsing = <R, V>(
   absintheSocket: AbsintheSocket<R, V>,
   notifier: Notifier<R, V>,
-  onSucceed: $ElementType<NotifierPushHandler, "onSucceed">
+  onSucceed: NotifierPushHandler["onSucceed"]
 ): AbsintheSocket<R, V> =>
   pushAbsintheDocEvent(absintheSocket, setNotifierRequestStatusSending(absintheSocket, notifier), getNotifierPushHandler(onSucceed));
 

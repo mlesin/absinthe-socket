@@ -1,6 +1,5 @@
 import isDeepEqual from "fast-deep-equal";
 import {arrayRemove} from "../utils-array";
-// import findIndex from "./findIndex";
 import {Notifier} from "./types";
 
 const remove = <R, V>(notifier: Notifier<R, V>) => (notifiers: Array<Notifier<R, V>>): Array<Notifier<R, V>> =>

@@ -27,12 +27,7 @@ const getPushHandler = <Result, Variables, Response>(
 ): NotifierPushHandler<Response> => {
   return {
     ...notifierPushHandler,
-    onError: getPushHandlerMethodGetter(
-      absintheSocket,
-      request
-    )(<R, V>(asckt: AbsintheSocket<R, V>, ntf: Notifier<R, V>, ...args: unknown[]) => {
-      console.log(asckt, ntf, args); // FIXME FIXME FIXME!!!
-    }),
+    onError: getPushHandlerMethodGetter(absintheSocket, request)(notifierPushHandler.onError),
   };
 };
 // map(getPushHandlerMethodGetter(absintheSocket, request), notifierPushHandler);

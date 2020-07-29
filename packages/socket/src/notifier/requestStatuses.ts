@@ -1,4 +1,4 @@
-import {$Values} from "utility-types";
+type $Values<O extends Record<string, unknown>> = O[keyof O];
 
 const requestStatuses = {
   canceled: "canceled" as const,

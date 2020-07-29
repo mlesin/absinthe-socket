@@ -1,6 +1,7 @@
 import {Channel, Socket as PhoenixSocket} from "phoenix";
 
 import {Notifier, Observer} from "./notifier/types";
+import {GqlResponse} from "./utils-graphql";
 
 export interface AbsintheSocket<Result, Variables> {
   channel: Channel;
@@ -9,13 +10,13 @@ export interface AbsintheSocket<Result, Variables> {
   phoenixSocket: PhoenixSocket;
 }
 
-export interface PushHandler<Response> {
+export interface PushHandler<Result> {
   onError: (errorMessage: string) => void;
-  onSucceed: (response: Response) => void;
+  onSucceed: (response: GqlResponse<Result>) => void;
   onTimeout: () => void;
 }
 
-export interface NotifierPushHandler<Response> {
+export interface NotifierPushHandler {
   onError: <Result, Variables>(
     absintheSocket: AbsintheSocket<Result, Variables>,
     notifier: Notifier<Result, Variables>,
@@ -24,7 +25,7 @@ export interface NotifierPushHandler<Response> {
   onSucceed: <Result, Variables>(
     absintheSocket: AbsintheSocket<Result, Variables>,
     notifier: Notifier<Result, Variables>,
-    response: Response
+    response: GqlResponse<Result>
   ) => void;
   onTimeout: <Result, Variables>(absintheSocket: AbsintheSocket<Result, Variables>, notifier: Notifier<Result, Variables>) => void;
 }

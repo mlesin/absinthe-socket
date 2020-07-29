@@ -1,8 +1,7 @@
 import {Message} from "phoenix";
+import isDeepEqual from "fast-deep-equal";
 import {gqlErrorsToString, GqlError, GqlResponse} from "./utils-graphql";
-
 import abortNotifier from "./abortNotifier";
-import notifierFind from "./notifier/find";
 import notifierFlushCanceled from "./notifier/flushCanceled";
 import notifierNotifyCanceled from "./notifier/notifyCanceled";
 import notifierNotifyResultEvent from "./notifier/notifyResultEvent";
@@ -100,7 +99,8 @@ export const onDataMessage = <Result, Variables>(
   absintheSocket: AbsintheSocket<Result, Variables>,
   {payload}: Message<SubscriptionPayload<any>>
 ): void => {
-  const notifier = notifierFind(absintheSocket.notifiers, "subscriptionId", payload.subscriptionId);
+  // const notifier = notifierFind(absintheSocket.notifiers, "subscriptionId", payload.subscriptionId);
+  const notifier = absintheSocket.notifiers.find((ntf) => isDeepEqual(ntf.subscriptionId, payload.subscriptionId));
 
   if (notifier) {
     notifierNotifyResultEvent(notifier, payload.result);

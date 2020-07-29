@@ -1,5 +1,4 @@
 import {GqlResponse} from "./utils-graphql";
-
 import notifierNotifyResultEvent from "./notifier/notifyResultEvent";
 import notifierNotifyStartEvent from "./notifier/notifyStartEvent";
 import notifierRemove from "./notifier/remove";
@@ -8,7 +7,6 @@ import refreshNotifier from "./refreshNotifier";
 import requestStatuses from "./notifier/requestStatuses";
 import updateNotifiers from "./updateNotifiers";
 import {subscribe} from "./subscription";
-
 import {AbsintheSocket} from "./types";
 import {Notifier} from "./notifier/types";
 

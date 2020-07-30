@@ -41,6 +41,5 @@
     "zen-observable": "^0.8.15"
   },
   "devDependencies": {
-    "nps": "^5.10.0"
   }
 }

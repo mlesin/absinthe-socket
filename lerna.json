@@ -1,6 +1,7 @@
 {
   "packages": [
-    "packages/socket"
+    "packages/socket",
+    "packages/socket-apollo-link"
   ],
   "version": "independent",
   "npmClient": "yarn",

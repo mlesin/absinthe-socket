@@ -4,11 +4,9 @@ import observe from "./observe";
 import {AbsintheSocket} from "./types";
 import {Notifier, Observer} from "./notifier/types";
 
-type $ElementType<T extends {[P in K & unknown]?: unknown}, K extends keyof T | number> = T[K];
-
-type Options<R, V> = {
-  onError: $ElementType<Observer<R, V>, "onError">;
-  onStart: $ElementType<Observer<R, V>, "onStart">;
+export type Options<R, V> = {
+  onError: Observer<R, V>["onError"];
+  onStart: Observer<R, V>["onStart"];
   unsubscribe: (absintheSocket: AbsintheSocket<R, V>, notifier?: Notifier<R, V>, observer?: Observer<R, V>) => void;
 };
 

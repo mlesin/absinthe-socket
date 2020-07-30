@@ -1,9 +1,7 @@
 import del from "rollup-plugin-delete";
 import dts from "rollup-plugin-dts";
 import typescript from "rollup-plugin-typescript2";
-
-// eslint-disable-next-line import/no-dynamic-require, @typescript-eslint/no-var-requires
-const pkg = require(`${process.cwd()}/package.json`);
+import path from "path";
 
 const dirs = {
   input: "src",
@@ -12,7 +10,6 @@ const dirs = {
 
 const override = {
   compilerOptions: {
-    declaration: true,
     declarationDir: `${dirs.output}/tmp_types`,
   },
 };
@@ -37,6 +34,8 @@ export default [
         targets: dirs.output,
       }),
       typescript({
+        // Keep cache for each package in root
+        cacheRoot: path.join(__dirname, "node_modules/.cache/rpt2"),
         useTsconfigDeclarationDir: true,
         tsconfigOverride: override,
       }),

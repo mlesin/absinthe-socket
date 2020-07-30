@@ -11,3 +11,4 @@ export {default as unobserveOrCancel} from "./unobserveOrCancel";
 export {AbsintheSocket} from "./types";
 export {Notifier, Observer} from "./notifier/types";
 export {SubscriptionPayload} from "./subscription";
+export {Options} from "./toObservable";

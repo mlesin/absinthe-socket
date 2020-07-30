@@ -1,74 +1,61 @@
-// @flow
-/* eslint-disable import/no-dynamic-require */
+import del from "rollup-plugin-delete";
+import dts from "rollup-plugin-dts";
+import typescript from "rollup-plugin-typescript2";
 
-import babel from "@rollup/plugin-babel";
-import commonjs from "@rollup/plugin-commonjs";
-import globby from "globby";
-import {pascalCase} from "pascal-case";
-import resolve from "@rollup/plugin-node-resolve";
-import typescript from "@rollup/plugin-typescript";
-
-// $FlowFixMe
+// eslint-disable-next-line import/no-dynamic-require, @typescript-eslint/no-var-requires
 const pkg = require(`${process.cwd()}/package.json`);
 
 const dirs = {
   input: "src",
   output: "dist",
-  compat: "compat",
 };
 
-const plugins = {
-  babel: babel({
-    configFile: "../../.babelrc",
-    exclude: ["node_modules/**", "../../node_modules/**"],
-    babelHelpers: "runtime",
-  }),
-  commonjs: commonjs({}),
-  resolve: resolve(),
-  typescript: typescript(),
-};
-
-const getCjsAndEsConfig = (fileName) => ({
-  input: `${dirs.input}/${fileName}`,
-  output: [
-    {
-      file: `${dirs.output}/${fileName}`,
-      format: "es",
-      sourcemap: true,
-    },
-    {
-      file: `${dirs.compat}/cjs/${fileName}`,
-      format: "cjs",
-      sourcemap: true,
-    },
-  ],
-  plugins: [plugins.babel],
-});
-
-const sources = globby.sync("**/*js", {cwd: dirs.input});
-
-// eslint-disable-next-line no-unused-vars
-const getUnscopedName = (pkg) => {
-  const [scope, name] = pkg.name.split("/");
-
-  return pascalCase(scope) + pascalCase(name);
+const override = {
+  compilerOptions: {
+    declaration: true,
+    declarationDir: `${dirs.output}/tmp_types`,
+  },
 };
 
 export default [
   {
-    input: `${dirs.input}/index.js`,
-    output: {
-      file: `${dirs.compat}/umd/index.js`,
-      format: "umd",
-      name: pascalCase(getUnscopedName(pkg)),
-      sourcemap: true,
-    },
+    input: `${dirs.input}/index.ts`,
+    output: [
+      {
+        file: `${dirs.output}/es/index.js`,
+        format: "es",
+        sourcemap: true,
+      },
+      {
+        file: `${dirs.output}/cjs/index.js`,
+        format: "cjs",
+        sourcemap: true,
+      },
+    ],
     plugins: [
-      plugins.babel,
-      plugins.resolve,
-      plugins.commonjs,
-      plugins.typescript,
+      del({
+        targets: dirs.output,
+      }),
+      typescript({
+        useTsconfigDeclarationDir: true,
+        tsconfigOverride: override,
+      }),
     ],
   },
-  ...sources.map(getCjsAndEsConfig),
+  {
+    input: `${dirs.output}/tmp_types/index.d.ts`,
+    output: [
+      {
+        file: `${dirs.output}/types/index.d.ts`,
+        format: "es",
+      },
+    ],
+    plugins: [
+      dts(),
+      del({
+        targets: `${dirs.output}/tmp_types`,
+        hook: "buildEnd",
+      }),
+    ],
+  },
 ];

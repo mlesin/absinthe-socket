@@ -41,4 +41,5 @@ module.exports = {
       },
     ],
   },
+  ignorePatterns: ["**/dist/**", "flow-typed/**"],
 };

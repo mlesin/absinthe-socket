@@ -12,3 +12,4 @@ export {AbsintheSocket} from "./types";
 export {Notifier, Observer} from "./notifier/types";
 export {SubscriptionPayload} from "./subscription";
 export {Options} from "./toObservable";
+export {getOperationType} from "./utils-graphql";

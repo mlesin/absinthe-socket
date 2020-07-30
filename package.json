@@ -2,11 +2,12 @@
   "name": "absinthe-socket",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/socket",
+    "packages/socket-apollo-link"
   ],
   "scripts": {
-    "build": "rollup -c ../../rollup.config.js",
-    "lint": "eslint --rule 'flowtype-errors/show-errors: error'"
+    "build": "lerna exec -- rollup -c ../../rollup.config.js",
+    "lint": "eslint ."
   },
   "lint-staged": {
     "*.js": [

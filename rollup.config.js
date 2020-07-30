@@ -14,6 +14,17 @@ const override = {
   },
 };
 
+const external = [
+  "fast-deep-equal",
+  "zen-observable",
+  "fp-ts/lib/Array",
+  "fp-ts/lib/ReadonlyArray",
+  "fp-ts/lib/function",
+  "graphql",
+  "@apollo/client",
+  "@absinthe/socket",
+];
+
 export default [
   {
     input: `${dirs.input}/index.ts`,
@@ -22,13 +33,16 @@ export default [
         file: `${dirs.output}/es/index.js`,
         format: "es",
         sourcemap: true,
+        exports: "auto",
       },
       {
         file: `${dirs.output}/cjs/index.js`,
         format: "cjs",
         sourcemap: true,
+        exports: "auto",
       },
     ],
+    external,
     plugins: [
       del({
         targets: dirs.output,

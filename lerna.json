@@ -10,6 +10,9 @@
   ],
   "useWorkspaces": true,
   "command": {
+    "publish": {
+      "message": "chore: Publish release"
+    },
     "init": {
       "exact": true
     }

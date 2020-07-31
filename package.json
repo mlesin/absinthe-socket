@@ -6,7 +6,8 @@
     "packages/socket-apollo-link"
   ],
   "scripts": {
-    "build": "lerna exec -- rollup -c ../../rollup.config.js",
+    "build.readme": "npx lerna exec -- npx nps build:readme",
+    "build": "npx lerna exec -- npx nps prepack",
     "lint": "eslint ."
   },
   "lint-staged": {
@@ -16,27 +17,23 @@
     ]
   },
   "devDependencies": {
-    "@commitlint/cli": "^9.1.1",
     "@commitlint/config-conventional": "^9.1.1",
-    "@commitlint/config-lerna-scopes": "^9.1.1",
-    "@commitlint/prompt-cli": "^9.1.1",
     "@types/phoenix": "^1.5.0",
     "@types/zen-observable": "^0.8.0",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
-    "doctoc": "^1.4.0",
-    "documentation": "^13.0.2",
     "eslint": "^7.5.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-airbnb-typescript": "^9.0.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.20.5",
+    "eslint-plugin-react-hooks": "^4.0.8",
     "fp-ts": "^2.7.1",
     "husky": "^4.2.5",
-    "lerna": "3.22.1",
     "lint-staged": "^10.2.11",
-    "pkg-to-readme": "^1.1.0",
     "prettier": "^2.0.5",
     "rollup": "^2.23.0",
     "rollup-plugin-delete": "^2.0.0",

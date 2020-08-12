@@ -1,6 +1,6 @@
-import {Notifier} from "./types";
+import { Notifier } from './types';
 
-const cancel = <R, V>({activeObservers, canceledObservers, ...rest}: Notifier<R, V>): Notifier<R, V> => ({
+const cancel = ({ activeObservers, canceledObservers, ...rest }: Notifier): Notifier => ({
   ...rest,
   isActive: false,
   activeObservers: [],

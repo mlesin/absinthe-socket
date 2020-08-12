@@ -1,9 +1,9 @@
-import flushCanceled from "./flushCanceled";
-import requestStatuses from "./requestStatuses";
+import flushCanceled from './flushCanceled';
+import requestStatuses from './requestStatuses';
 
-import {Notifier} from "./types";
+import { Notifier } from './types';
 
-const reset = <R, V>(notifier: Notifier<R, V>): Notifier<R, V> =>
+const reset = (notifier: Notifier): Notifier =>
   flushCanceled({
     ...notifier,
     isActive: true,

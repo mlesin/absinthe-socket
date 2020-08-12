@@ -1,7 +1,9 @@
-export type GqlOperationType = "mutation" | "query" | "subscription";
+import { DocumentNode, OperationTypeNode } from 'graphql';
+
+export type GqlOperationType = OperationTypeNode;
 
 export interface GqlRequest<V> {
-  operation: GqlOperationType;
+  operation: DocumentNode;
   variables?: V;
 }
 
@@ -20,7 +22,7 @@ export interface GqlError {
   locations?: Array<GqlErrorLocation>;
 }
 
-export interface GqlResponse<R> {
-  data?: R;
+export interface GqlResponse {
+  data?: unknown;
   errors?: Array<GqlError>;
 }

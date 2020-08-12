@@ -1,28 +1,28 @@
-import {AbortEvent, CancelEvent, ErrorEvent, Notifier, ResultEvent, StartEvent} from "../types";
+import { AbortEvent, CancelEvent, ErrorEvent, Notifier, ResultEvent, StartEvent } from '../types';
 
-const createStartEvent = <R, V, P extends Notifier<R, V>>(payload: P): StartEvent<R, V, P> => ({
+const createStartEvent = <P extends Notifier>(payload: P): StartEvent<P> => ({
   payload,
-  tag: "onStart",
+  tag: 'onStart',
 });
 
 const createResultEvent = <R>(payload: R): ResultEvent<R> => ({
   payload,
-  tag: "onResult",
+  tag: 'onResult',
 });
 
 const createErrorEvent = (payload: Error): ErrorEvent => ({
   payload,
-  tag: "onError",
+  tag: 'onError',
 });
 
 const createCancelEvent = (): CancelEvent => ({
-  tag: "onCancel",
+  tag: 'onCancel',
   payload: undefined,
 });
 
 const createAbortEvent = (payload: Error): AbortEvent => ({
   payload,
-  tag: "onAbort",
+  tag: 'onAbort',
 });
 
-export {createStartEvent, createResultEvent, createErrorEvent, createCancelEvent, createAbortEvent};
+export { createStartEvent, createResultEvent, createErrorEvent, createCancelEvent, createAbortEvent };

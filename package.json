@@ -9,7 +9,7 @@
     "build.readme": "npx lerna exec -- npx nps build:readme",
     "build": "npx lerna exec -- npx nps prepack",
     "repub": "npm unpublish @absinthe/socket-apollo-link --force && npm unpublish @absinthe/socket --force && npx lerna exec -- npm publish",
-    "lint": "eslint ."
+    "lint": "eslint --fix ."
   },
   "lint-staged": {
     "*.js": [

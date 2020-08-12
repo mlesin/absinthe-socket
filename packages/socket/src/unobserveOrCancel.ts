@@ -1,10 +1,10 @@
-import cancel from "./cancel";
-import unobserve from "./unobserve";
+import cancel from './cancel';
+import unobserve from './unobserve';
 
-import {AbsintheSocket} from "./types";
-import {Notifier, Observer} from "./notifier/types";
+import { AbsintheSocket } from './types';
+import { Notifier, Observer } from './notifier/types';
 
-const doUnobserveOrCancel = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, observer: Observer<R, V>) =>
+const doUnobserveOrCancel = (absintheSocket: AbsintheSocket, notifier: Notifier, observer: Observer) =>
   notifier.activeObservers.length === 1 ? cancel(absintheSocket, notifier) : unobserve(absintheSocket, notifier, observer);
 
 /**
@@ -16,10 +16,7 @@ const doUnobserveOrCancel = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifie
  *
  * withAbsintheSocket.unobserve(absintheSocket, notifier, observer);
  */
-const unobserveOrCancel = <R, V>(
-  absintheSocket: AbsintheSocket<R, V>,
-  notifier: Notifier<R, V>,
-  observer: Observer<R, V>
-): AbsintheSocket<R, V> => (notifier.isActive ? doUnobserveOrCancel(absintheSocket, notifier, observer) : absintheSocket);
+const unobserveOrCancel = (absintheSocket: AbsintheSocket, notifier: Notifier, observer: Observer): AbsintheSocket =>
+  notifier.isActive ? doUnobserveOrCancel(absintheSocket, notifier, observer) : absintheSocket;
 
 export default unobserveOrCancel;

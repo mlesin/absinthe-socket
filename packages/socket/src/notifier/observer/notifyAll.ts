@@ -1,28 +1,27 @@
-import {Event, Observer, Notifier} from "../types";
+import { Event, Observer, Notifier } from '../types';
 
-const getNotifier = <R, V>(handlerName: keyof Observer<R, V>, payload: unknown) => (observer: Observer<R, V>) => {
+const getNotifier = (handlerName: keyof Observer, payload: unknown) => (observer: Observer) => {
   switch (handlerName) {
-    case "onAbort":
+    case 'onAbort':
       observer.onAbort?.(payload as Error);
       break;
-    case "onCancel":
+    case 'onCancel':
       observer.onCancel?.();
       break;
-    case "onError":
+    case 'onError':
       observer.onError?.(payload as Error);
       break;
-    case "onResult":
-      observer.onResult?.(payload as R);
+    case 'onResult':
+      observer.onResult?.(payload as Record<string, unknown>);
       break;
-    case "onStart":
-      observer.onStart?.(payload as Notifier<R, V>);
+    case 'onStart':
+      observer.onStart?.(payload as Notifier);
       break;
   }
 };
 
 // const getHandlerName = ({name}: Event) => `on${name}`;
 
-const notifyAll = <R, V>(observers: ReadonlyArray<Observer<R, V>>, event: Event<R, V>): void =>
-  observers.forEach(getNotifier<R, V>(event.tag, event.payload));
+const notifyAll = (observers: ReadonlyArray<Observer>, event: Event): void => observers.forEach(getNotifier(event.tag, event.payload));
 
 export default notifyAll;

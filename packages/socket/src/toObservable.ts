@@ -1,38 +1,38 @@
-import Observable from "zen-observable";
-import isDeepEqual from "fast-deep-equal";
-import observe from "./observe";
-import {AbsintheSocket} from "./types";
-import {Notifier, Observer} from "./notifier/types";
+import Observable from 'zen-observable';
+import isDeepEqual from 'fast-deep-equal';
+import observe from './observe';
+import { AbsintheSocket } from './types';
+import { Notifier, Observer } from './notifier/types';
 
-export type Options<R, V> = {
-  onError: Observer<R, V>["onError"];
-  onStart: Observer<R, V>["onStart"];
-  unsubscribe: (absintheSocket: AbsintheSocket<R, V>, notifier?: Notifier<R, V>, observer?: Observer<R, V>) => void;
-};
+export interface Options {
+  onError: Observer['onError'];
+  onStart: Observer['onStart'];
+  unsubscribe: (absintheSocket: AbsintheSocket, notifier?: Notifier, observer?: Observer) => void;
+}
 
-const getUnsubscriber = <R, V>(
-  absintheSocket: AbsintheSocket<R, V>,
-  {request}: Notifier<R, V>,
-  observer: Observer<R, V>,
-  unsubscribe: Options<R, V>["unsubscribe"]
+const getUnsubscriber = (
+  absintheSocket: AbsintheSocket,
+  { request }: Notifier,
+  observer: Observer,
+  unsubscribe: Options['unsubscribe'],
 ) => () => {
   const notifier = absintheSocket.notifiers.find((ntf) => isDeepEqual(ntf.request, request));
   unsubscribe(absintheSocket, notifier, notifier ? observer : undefined);
 };
 
-const onResult = <R, V>({operationType}: Notifier<R, V>, observableObserver: ZenObservable.SubscriptionObserver<R>) => (result: R) => {
+const onResult = <R>({ operationType }: Notifier, observableObserver: ZenObservable.SubscriptionObserver<R>) => (result: R) => {
   observableObserver.next(result);
 
-  if (operationType !== "subscription") {
+  if (operationType !== 'subscription') {
     observableObserver.complete();
   }
 };
 
-const createObserver = <R, V>(
-  notifier: Notifier<R, V>,
-  handlers: Omit<Options<R, V>, "unsubscribe">,
-  observableObserver: ZenObservable.SubscriptionObserver<R>
-): Observer<R, V> => ({
+const createObserver = (
+  notifier: Notifier,
+  handlers: Omit<Options, 'unsubscribe'>,
+  observableObserver: ZenObservable.SubscriptionObserver<Record<string, unknown>>,
+): Observer => ({
   ...handlers,
   onAbort: observableObserver.error.bind(observableObserver),
   onResult: onResult(notifier, observableObserver),
@@ -42,10 +42,10 @@ const createObserver = <R, V>(
  * Creates an Observable that will follow the given notifier
  *
  * @param {AbsintheSocket} absintheSocket
- * @param {Notifier<R, V>} notifier
+ * @param {Notifier} notifier
  * @param {Object} [options]
  * @param {function(error: Error): undefined} [options.onError]
- * @param {function(notifier: Notifier<R, V>): undefined} [options.onStart]
+ * @param {function(notifier: Notifier): undefined} [options.onStart]
  * @param {function(): undefined} [options.unsubscribe]
  *
  * @return {Observable}
@@ -67,12 +67,12 @@ const createObserver = <R, V>(
  *   unsubscribe: unobserveOrCancelIfNeeded
  * });
  */
-const toObservable = <R, V>(
-  absintheSocket: AbsintheSocket<R, V>,
-  notifier: Notifier<R, V>,
-  {unsubscribe, ...handlers}: Options<R, V>
-): Observable<R> =>
-  new Observable<R>((observableObserver: ZenObservable.SubscriptionObserver<R>) => {
+const toObservable = (
+  absintheSocket: AbsintheSocket,
+  notifier: Notifier,
+  { unsubscribe, ...handlers }: Options,
+): Observable<Record<string, unknown>> =>
+  new Observable((observableObserver: ZenObservable.SubscriptionObserver<Record<string, unknown>>) => {
     const observer = createObserver(notifier, handlers, observableObserver);
 
     observe(absintheSocket, notifier, observer);

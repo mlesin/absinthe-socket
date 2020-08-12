@@ -1,6 +1,6 @@
-import {GqlRequestCompat} from "../utils-graphql";
+import { GqlRequestCompat } from '../utils-graphql';
 
-import absintheEventNames, {AbsintheEventName} from "./absintheEventNames";
+import absintheEventNames, { AbsintheEventName } from './absintheEventNames';
 
 type AbsintheEventWith<N extends AbsintheEventName, P> = {
   name: N;
@@ -16,4 +16,4 @@ export type AbsintheUnsubscribeEvent = AbsintheEventWith<
 
 export type AbsintheDocEvent<V> = AbsintheEventWith<typeof absintheEventNames.doc, GqlRequestCompat<V>>;
 
-export type AbsintheEvent = AbsintheDocEvent<any> | AbsintheUnsubscribeEvent;
+export type AbsintheEvent = AbsintheDocEvent<unknown> | AbsintheUnsubscribeEvent;

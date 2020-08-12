@@ -1,42 +1,41 @@
-import isDeepEqual from "fast-deep-equal";
-import {GqlRequest} from "./utils-graphql";
-import handlePush from "./handlePush";
-import {AbsintheEvent} from "./absinthe-event/types";
-import {AbsintheSocket, NotifierPushHandler, PushHandler} from "./types";
-import {Notifier} from "./notifier/types";
+import isDeepEqual from 'fast-deep-equal';
+import { GqlRequest } from './utils-graphql';
+import handlePush from './handlePush';
+import { AbsintheEvent } from './absinthe-event/types';
+import { AbsintheSocket, NotifierPushHandler, PushHandler } from './types';
+import { Notifier } from './notifier/types';
 
-type Handler<R, V, T extends keyof PushHandler<unknown>> = (arg0: AbsintheSocket<R, V>, arg1: Notifier<R, V>) => PushHandler<R>[T];
+type Handler<T extends keyof PushHandler> = (arg0: AbsintheSocket, arg1: Notifier) => PushHandler[T];
 
-const getPushHandlerMethodGetter = <R, V, T extends keyof PushHandler<unknown>>(
-  absintheSocket: AbsintheSocket<R, V>,
-  request: GqlRequest<V>
-) => {
-  return (handle: Handler<R, V, T>) => {
+const getPushHandlerMethodGetter = <T extends keyof PushHandler>(absintheSocket: AbsintheSocket, request: GqlRequest<unknown>) => {
+  return (handle: Handler<T>) => {
     const notifier = absintheSocket.notifiers.find((ntf) => isDeepEqual(ntf.request, request));
     if (notifier) {
       return handle(absintheSocket, notifier);
     }
-    return () => {};
+    return () => {
+      return 0;
+    };
   };
 };
 
-const getPushHandler = <R, V>(aSocket: AbsintheSocket<R, V>, request: GqlRequest<V>, npHandler: NotifierPushHandler): PushHandler<R> => {
+const getPushHandler = (aSocket: AbsintheSocket, request: GqlRequest<unknown>, npHandler: NotifierPushHandler): PushHandler => {
   return {
-    onError: getPushHandlerMethodGetter<R, V, "onError">(aSocket, request)(npHandler.onError),
-    onSucceed: getPushHandlerMethodGetter<R, V, "onSucceed">(aSocket, request)(npHandler.onSucceed),
-    onTimeout: getPushHandlerMethodGetter<R, V, "onTimeout">(aSocket, request)(npHandler.onTimeout),
+    onError: getPushHandlerMethodGetter<'onError'>(aSocket, request)(npHandler.onError),
+    onSucceed: getPushHandlerMethodGetter<'onSucceed'>(aSocket, request)(npHandler.onSucceed),
+    onTimeout: getPushHandlerMethodGetter<'onTimeout'>(aSocket, request)(npHandler.onTimeout),
   };
 };
 
-const pushAbsintheEvent = <R, V>(
-  absintheSocket: AbsintheSocket<R, V>,
+const pushAbsintheEvent = <V>(
+  absintheSocket: AbsintheSocket,
   request: GqlRequest<V>,
   notifierPushHandler: NotifierPushHandler,
-  absintheEvent: AbsintheEvent
-): AbsintheSocket<R, V> => {
+  absintheEvent: AbsintheEvent,
+): AbsintheSocket => {
   handlePush(
     absintheSocket.channel.push(absintheEvent.name, absintheEvent.payload),
-    getPushHandler(absintheSocket, request, notifierPushHandler)
+    getPushHandler(absintheSocket, request, notifierPushHandler),
   );
 
   return absintheSocket;

@@ -1,29 +1,20 @@
-// @flow
+import * as withAbsintheSocket from '@absinthe/socket';
+import { requestFromCompat } from '@jumpn/utils-graphql';
+import { Socket as PhoenixSocket } from 'phoenix';
 
-import * as withAbsintheSocket from "@absinthe/socket";
-import {requestFromCompat} from "@jumpn/utils-graphql";
-import {Socket as PhoenixSocket} from "phoenix";
+import type { AbsintheSocket, GqlRequest, SubscriptionPayload } from '@absinthe/socket';
+import type { GqlRequestCompat } from '@jumpn/utils-graphql/dist/types';
+import type { SocketOpts } from 'phoenix';
 
-import type {
-  AbsintheSocket,
-  GqlRequest,
-  SubscriptionPayload
-} from "@absinthe/socket";
-import type {GqlRequestCompat} from "@jumpn/utils-graphql/dist/types";
-import type {SocketOpts} from "phoenix";
-
-type SubscriptionCallback = (
-  error: ?Error,
-  payload?: SubscriptionPayload<any>
-) => void;
+type SubscriptionCallback = (error: ?Error, payload?: SubscriptionPayload<any>) => void;
 
 const observe = (subscriptionsClient, notifier, callback) =>
   withAbsintheSocket.observe(subscriptionsClient.absintheSocket, notifier, {
     onAbort: callback,
-    onResult: result => callback(null, result)
+    onResult: (result) => callback(null, result),
   });
 
-const generateRequestKey = subscriptionsClient => {
+const generateRequestKey = (subscriptionsClient) => {
   subscriptionsClient.requestsCount += 1;
 
   return String(subscriptionsClient.requestsCount);
@@ -40,15 +31,11 @@ const storeRequest = (subscriptionsClient, request) => {
 const storeRequestIfNeeded = (subscriptionsClient, request) => {
   const requestKey = subscriptionsClient.requests.get(request);
 
-  return requestKey !== undefined
-    ? requestKey
-    : storeRequest(subscriptionsClient, request);
+  return requestKey !== undefined ? requestKey : storeRequest(subscriptionsClient, request);
 };
 
 const findNotifier = (subscriptionsClient, request) =>
-  subscriptionsClient.absintheSocket.notifiers.find(
-    notifier => notifier.request === request
-  );
+  subscriptionsClient.absintheSocket.notifiers.find((notifier) => notifier.request === request);
 
 // eslint-disable-next-line consistent-return
 const findRequest = (subscriptionsClient, requestKey) => {
@@ -71,9 +58,7 @@ export default class SubscriptionsClient {
   requests: Map<GqlRequest<any>, string>;
 
   constructor(socketUrl: string, options: SocketOpts) {
-    this.absintheSocket = withAbsintheSocket.create(
-      new PhoenixSocket(socketUrl, options)
-    );
+    this.absintheSocket = withAbsintheSocket.create(new PhoenixSocket(socketUrl, options));
 
     this.requests = new Map();
   }
@@ -82,14 +67,8 @@ export default class SubscriptionsClient {
     this.absintheSocket.phoenixSocket.disconnect();
   }
 
-  subscribe(
-    requestCompat: GqlRequestCompat<any>,
-    callback: SubscriptionCallback
-  ): string {
-    const notifier = withAbsintheSocket.send(
-      this.absintheSocket,
-      requestFromCompat(requestCompat)
-    );
+  subscribe(requestCompat: GqlRequestCompat<any>, callback: SubscriptionCallback): string {
+    const notifier = withAbsintheSocket.send(this.absintheSocket, requestFromCompat(requestCompat));
 
     const requestKey = storeRequestIfNeeded(this, notifier.request);
 
@@ -109,6 +88,6 @@ export default class SubscriptionsClient {
   }
 
   unsubscribeAll() {
-    this.absintheSocket.notifiers.forEach(notifier => cancel(this, notifier));
+    this.absintheSocket.notifiers.forEach((notifier) => cancel(this, notifier));
   }
 }

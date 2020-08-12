@@ -1,4 +1,4 @@
-import * as A from "fp-ts/lib/Array";
+import * as A from 'fp-ts/lib/Array';
 
 /**
  * Returns a new Array with the result of having removed the specified element

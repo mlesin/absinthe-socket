@@ -1,6 +1,6 @@
-import {Notifier, Observer} from "./types";
+import { Notifier, Observer } from './types';
 
-const observe = <R, V>({activeObservers, ...rest}: Notifier<R, V>, observer: Observer<R, V>): Notifier<R, V> => ({
+const observe = ({ activeObservers, ...rest }: Notifier, observer: Observer): Notifier => ({
   ...rest,
   activeObservers: [...activeObservers, observer],
   isActive: true,

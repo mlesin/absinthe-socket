@@ -1,11 +1,11 @@
-import del from "rollup-plugin-delete";
-import dts from "rollup-plugin-dts";
-import typescript from "rollup-plugin-typescript2";
-import path from "path";
+import del from 'rollup-plugin-delete';
+import dts from 'rollup-plugin-dts';
+import typescript from 'rollup-plugin-typescript2';
+import path from 'path';
 
 const dirs = {
-  input: "src",
-  output: "dist",
+  input: 'src',
+  output: 'dist',
 };
 
 const override = {
@@ -15,14 +15,14 @@ const override = {
 };
 
 const external = [
-  "fast-deep-equal",
-  "zen-observable",
-  "fp-ts/lib/Array",
-  "fp-ts/lib/ReadonlyArray",
-  "fp-ts/lib/function",
-  "graphql",
-  "@apollo/client",
-  "@absinthe/socket",
+  'fast-deep-equal',
+  'zen-observable',
+  'fp-ts/lib/Array',
+  'fp-ts/lib/ReadonlyArray',
+  'fp-ts/lib/function',
+  'graphql',
+  '@apollo/client/core',
+  '@absinthe/socket',
 ];
 
 export default [
@@ -31,15 +31,15 @@ export default [
     output: [
       {
         file: `${dirs.output}/es/index.js`,
-        format: "es",
+        format: 'es',
         sourcemap: true,
-        exports: "auto",
+        exports: 'auto',
       },
       {
         file: `${dirs.output}/cjs/index.js`,
-        format: "cjs",
+        format: 'cjs',
         sourcemap: true,
-        exports: "auto",
+        exports: 'auto',
       },
     ],
     external,
@@ -49,7 +49,7 @@ export default [
       }),
       typescript({
         // Keep cache for each package in root
-        cacheRoot: path.join(__dirname, "node_modules/.cache/rpt2"),
+        cacheRoot: path.join(__dirname, 'node_modules/.cache/rpt2'),
         useTsconfigDeclarationDir: true,
         tsconfigOverride: override,
       }),
@@ -60,14 +60,14 @@ export default [
     output: [
       {
         file: `${dirs.output}/types/index.d.ts`,
-        format: "es",
+        format: 'es',
       },
     ],
     plugins: [
       dts(),
       del({
         targets: `${dirs.output}/tmp_types`,
-        hook: "buildEnd",
+        hook: 'buildEnd',
       }),
     ],
   },

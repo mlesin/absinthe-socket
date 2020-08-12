@@ -1,14 +1,14 @@
-import notifierRefresh from "./notifier/refresh";
-import notifierUnobserve from "./notifier/unobserve";
-import updateNotifiers from "./updateNotifiers";
+import notifierRefresh from './notifier/refresh';
+import notifierUnobserve from './notifier/unobserve';
+import updateNotifiers from './updateNotifiers';
 
-import {AbsintheSocket} from "./types";
-import {Notifier, Observer} from "./notifier/types";
+import { AbsintheSocket } from './types';
+import { Notifier, Observer } from './notifier/types';
 
-const ensureHasActiveObserver = <R, V>(notifier: Notifier<R, V>, observer: Observer<R, V>) => {
+const ensureHasActiveObserver = (notifier: Notifier, observer: Observer) => {
   if (notifier.activeObservers.includes(observer)) return notifier;
 
-  throw new Error("Observer is not attached to notifier");
+  throw new Error('Observer is not attached to notifier');
 };
 
 /**
@@ -19,7 +19,7 @@ const ensureHasActiveObserver = <R, V>(notifier: Notifier<R, V>, observer: Obser
  *
  * withAbsintheSocket.unobserve(absintheSocket, notifier, observer);
  */
-const unobserve = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier: Notifier<R, V>, observer: Observer<R, V>): AbsintheSocket<R, V> =>
+const unobserve = (absintheSocket: AbsintheSocket, notifier: Notifier, observer: Observer): AbsintheSocket =>
   updateNotifiers(absintheSocket, notifierRefresh(notifierUnobserve(ensureHasActiveObserver(notifier, observer), observer)));
 
 export default unobserve;

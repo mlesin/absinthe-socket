@@ -1,11 +1,11 @@
-import {readonlyArrayRemove} from "../utils-array";
+import { readonlyArrayRemove } from '../utils-array';
 
-import {Notifier, Observer} from "./types";
+import { Notifier, Observer } from './types';
 
-const removeObserver = <R, V>(observers: ReadonlyArray<Observer<R, V>>, observer: Observer<R, V>) =>
+const removeObserver = (observers: ReadonlyArray<Observer>, observer: Observer) =>
   readonlyArrayRemove(observers.indexOf(observer), observers);
 
-const unobserve = <R, V>({activeObservers, ...rest}: Notifier<R, V>, observer: Observer<R, V>): Notifier<R, V> => ({
+const unobserve = ({ activeObservers, ...rest }: Notifier, observer: Observer): Notifier => ({
   ...rest,
   activeObservers: removeObserver(activeObservers, observer),
 });

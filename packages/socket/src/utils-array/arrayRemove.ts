@@ -1,5 +1,5 @@
-import * as A from "fp-ts/lib/Array";
-import * as ROA from "fp-ts/lib/ReadonlyArray";
+import * as A from 'fp-ts/lib/Array';
+import * as ROA from 'fp-ts/lib/ReadonlyArray';
 
 /**
  * Returns a new Array with the result of having removed the specified element

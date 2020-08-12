@@ -1,5 +1,3 @@
-// @flow
-
 import notifierFind from "@absinthe/socket/dist/notifier/find";
 import {observe, send, unobserveOrCancel} from "@absinthe/socket";
 import {createDeferred} from "@jumpn/utils-promise";

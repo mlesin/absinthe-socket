@@ -1,3 +1,3 @@
-import createAbsintheSocketLink from "./createAbsintheSocketLink";
+import createAbsintheSocketLink from './createAbsintheSocketLink';
 
 export default createAbsintheSocketLink;

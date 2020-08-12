@@ -1,29 +1,16 @@
-import {ApolloLink, Operation, Observable} from "@apollo/client";
-import {
-  send,
-  toObservable,
-  unobserveOrCancel,
-  AbsintheSocket,
-  Notifier,
-  GqlRequest,
-  Observer,
-  Options,
-  getOperationType,
-} from "@absinthe/socket";
-import {print} from "graphql";
-import {flow} from "fp-ts/lib/function";
+import { ApolloLink, Operation, Observable } from '@apollo/client/core';
+import { send, toObservable, unobserveOrCancel, AbsintheSocket, Notifier, GqlRequest, Observer, Options } from '@absinthe/socket';
+import { flow } from 'fp-ts/lib/function';
 
-const unobserveOrCancelIfNeeded = <R, V>(absintheSocket: AbsintheSocket<R, V>, notifier?: Notifier<R, V>, observer?: Observer<R, V>) => {
+const unobserveOrCancelIfNeeded = (absintheSocket: AbsintheSocket, notifier?: Notifier, observer?: Observer) => {
   if (notifier && observer) {
     unobserveOrCancel(absintheSocket, notifier, observer);
   }
 };
 
-const notifierToObservable = <R, V>(
-  absintheSocket: AbsintheSocket<R, V>,
-  onError: Options<R, V>["onError"],
-  onStart: Options<R, V>["onStart"]
-) => (notifier: Notifier<R, V>) =>
+const notifierToObservable = (absintheSocket: AbsintheSocket, onError: Options['onError'], onStart: Options['onStart']) => (
+  notifier: Notifier,
+) =>
   toObservable(absintheSocket, notifier, {
     onError,
     onStart,
@@ -31,29 +18,25 @@ const notifierToObservable = <R, V>(
   });
 
 const getRequest = <V>(op: Operation): GqlRequest<V> => ({
-  operation: getOperationType(print(op.query)),
+  operation: op.query,
   variables: op.variables as V, // FIXME need a validation here?
 });
 
 // Just to help bundler do tree-shaking
-type OnErrorHandler<R, V> = Observer<R, V>["onError"];
-type OnStartHandler<R, V> = Observer<R, V>["onStart"];
+type OnErrorHandler = Observer['onError'];
+type OnStartHandler = Observer['onStart'];
 
 /**
  * Creates a terminating ApolloLink to request operations using given
  * AbsintheSocket instance
  */
-const createAbsintheSocketLink = <R, V>(
-  absintheSocket: AbsintheSocket<R, V>,
-  onError?: OnErrorHandler<R, V>,
-  onStart?: OnStartHandler<R, V>
-): ApolloLink => {
-  const composed: (__0: Operation) => Observable<R> = flow(
+const createAbsintheSocketLink = (absintheSocket: AbsintheSocket, onError?: OnErrorHandler, onStart?: OnStartHandler): ApolloLink => {
+  const requestHandler: (__0: Operation) => Observable<Record<string, unknown>> = flow(
     getRequest,
-    (request: GqlRequest<V>) => send(absintheSocket, request),
-    notifierToObservable(absintheSocket, onError, onStart)
+    (request: GqlRequest<unknown>) => send(absintheSocket, request),
+    notifierToObservable(absintheSocket, onError, onStart),
   );
-  return new ApolloLink(composed);
+  return new ApolloLink(requestHandler);
 };
 
 export default createAbsintheSocketLink;

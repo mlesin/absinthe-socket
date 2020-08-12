@@ -1,12 +1,12 @@
-import isDeepEqual from "fast-deep-equal";
-import {arrayReplace} from "../utils-array";
-import {Notifier} from "./types";
+import isDeepEqual from 'fast-deep-equal';
+import { arrayReplace } from '../utils-array';
+import { Notifier } from './types';
 
-const refresh = <R, V>(notifier: Notifier<R, V>) => (notifiers: Array<Notifier<R, V>>): Array<Notifier<R, V>> =>
+const refresh = (notifier: Notifier) => (notifiers: Array<Notifier>): Array<Notifier> =>
   arrayReplace(
     notifiers.findIndex((ntf) => isDeepEqual(ntf.request, notifier.request)),
     notifier,
-    notifiers
+    notifiers,
   );
 
 export default refresh;

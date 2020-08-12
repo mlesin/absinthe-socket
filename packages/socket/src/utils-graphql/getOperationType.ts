@@ -1,19 +1,5 @@
-import type {GqlOperationType} from "./types";
-
-const operationTypeRe = /^\s*(query|mutation|subscription|\{)/;
-
-const getOperationTypeFromMatched = (matched: string): GqlOperationType => {
-  switch (matched) {
-    case "mutation":
-      return "mutation";
-    case "subscription":
-      return "subscription";
-    case "{":
-    case "query":
-    default:
-      return "query";
-  }
-};
+import { DocumentNode } from 'graphql';
+import { GqlOperationType } from './types';
 
 /**
  * Returns the type (query, mutation, or subscription) of the given operation
@@ -33,14 +19,12 @@ const getOperationTypeFromMatched = (matched: string): GqlOperationType => {
  *
  * console.log(operationType); // "subscription"
  */
-const getOperationType = (operation: string): GqlOperationType => {
-  const result = operation.match(operationTypeRe);
-
-  if (!result) {
-    throw new TypeError(`Invalid operation:\n${operation}`);
+const getOperationType = (operation: DocumentNode): GqlOperationType => {
+  const opdef = operation.definitions.find(({ kind }) => kind === 'OperationDefinition');
+  if (opdef?.kind === 'OperationDefinition') {
+    return opdef.operation;
   }
-
-  return getOperationTypeFromMatched(result[1]);
+  throw new TypeError(`Invalid operation:\n${operation}`);
 };
 
 export default getOperationType;

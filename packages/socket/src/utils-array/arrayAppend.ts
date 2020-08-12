@@ -1,5 +1,3 @@
-import * as A from "fp-ts/lib/Array";
-
 /**
  * Returns a new Array with elements appended to the one given.
  */

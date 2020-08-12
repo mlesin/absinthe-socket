@@ -5,9 +5,15 @@ import { AbsintheEvent } from './absinthe-event/types';
 import { AbsintheSocket, NotifierPushHandler, PushHandler } from './types';
 import { Notifier } from './notifier/types';
 
-type Handler<T extends keyof PushHandler> = (arg0: AbsintheSocket, arg1: Notifier) => PushHandler[T];
+type Handler<T extends keyof PushHandler> = (
+  arg0: AbsintheSocket,
+  arg1: Notifier,
+) => PushHandler[T];
 
-const getPushHandlerMethodGetter = <T extends keyof PushHandler>(absintheSocket: AbsintheSocket, request: GqlRequest<unknown>) => {
+const getPushHandlerMethodGetter = <T extends keyof PushHandler>(
+  absintheSocket: AbsintheSocket,
+  request: GqlRequest<unknown>,
+) => {
   return (handle: Handler<T>) => {
     const notifier = absintheSocket.notifiers.find((ntf) => isDeepEqual(ntf.request, request));
     if (notifier) {
@@ -19,7 +25,11 @@ const getPushHandlerMethodGetter = <T extends keyof PushHandler>(absintheSocket:
   };
 };
 
-const getPushHandler = (aSocket: AbsintheSocket, request: GqlRequest<unknown>, npHandler: NotifierPushHandler): PushHandler => {
+const getPushHandler = (
+  aSocket: AbsintheSocket,
+  request: GqlRequest<unknown>,
+  npHandler: NotifierPushHandler,
+): PushHandler => {
   return {
     onError: getPushHandlerMethodGetter<'onError'>(aSocket, request)(npHandler.onError),
     onSucceed: getPushHandlerMethodGetter<'onSucceed'>(aSocket, request)(npHandler.onSucceed),

@@ -13,7 +13,9 @@ import { createErrorEvent } from './notifier/event/eventCreators';
 import { AbsintheSocket } from './types';
 import { Notifier } from './notifier/types';
 
-const onMessage = (absintheSocket: AbsintheSocket) => (message: Message<withSubscription.SubscriptionPayload>) => {
+const onMessage = (absintheSocket: AbsintheSocket) => (
+  message: Message<withSubscription.SubscriptionPayload>,
+) => {
   if (withSubscription.isDataMessage(message)) {
     withSubscription.onDataMessage(absintheSocket, message);
   }
@@ -21,7 +23,8 @@ const onMessage = (absintheSocket: AbsintheSocket) => (message: Message<withSubs
 
 const createConnectionCloseError = () => new Error('connection: close');
 
-const notifyConnectionCloseError = (notifier: Notifier) => notifierNotify(notifier, createErrorEvent(createConnectionCloseError()));
+const notifyConnectionCloseError = (notifier: Notifier) =>
+  notifierNotify(notifier, createErrorEvent(createConnectionCloseError()));
 
 const notifierOnConnectionCloseCanceled = (absintheSocket: AbsintheSocket, notifier: Notifier) =>
   updateNotifiers(absintheSocket, notifierRemove(notifyConnectionCloseError(notifier)));
@@ -45,7 +48,8 @@ const notifierOnConnectionClose = (absintheSocket: AbsintheSocket) => (notifier:
 const onConnectionClose = (absintheSocket: AbsintheSocket) => () =>
   absintheSocket.notifiers.forEach(notifierOnConnectionClose(absintheSocket));
 
-const shouldJoinChannel = (absintheSocket: AbsintheSocket) => !absintheSocket.channelJoinCreated && absintheSocket.notifiers.length > 0;
+const shouldJoinChannel = (absintheSocket: AbsintheSocket) =>
+  !absintheSocket.channelJoinCreated && absintheSocket.notifiers.length > 0;
 
 const onConnectionOpen = (absintheSocket: AbsintheSocket) => () => {
   if (shouldJoinChannel(absintheSocket)) {

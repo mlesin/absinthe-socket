@@ -16,10 +16,17 @@ const setNotifierRequestStatusSent = (absintheSocket: AbsintheSocket, notifier: 
     requestStatus: requestStatuses.sent,
   });
 
-const onQueryOrMutationSucceed = (absintheSocket: AbsintheSocket, notifier: Notifier) => (response: GqlResponse) =>
+const onQueryOrMutationSucceed = (absintheSocket: AbsintheSocket, notifier: Notifier) => (
+  response: GqlResponse,
+) =>
   updateNotifiers(
     absintheSocket,
-    notifierRemove(notifierNotifyResultEvent(setNotifierRequestStatusSent(absintheSocket, notifier), response.data)),
+    notifierRemove(
+      notifierNotifyResultEvent(
+        setNotifierRequestStatusSent(absintheSocket, notifier),
+        response.data,
+      ),
+    ),
   );
 
 const pushQueryOrMutation = (absintheSocket: AbsintheSocket, notifier: Notifier) =>

@@ -18,7 +18,10 @@ import { Notifier, Observer } from './notifier/types';
  *   onResult: logEvent("result")
  * });
  */
-const observe = (absintheSocket: AbsintheSocket, notifier: Notifier, observer: Observer): Notifier =>
-  refreshNotifier(absintheSocket, notifierObserve(notifier, observer));
+const observe = (
+  absintheSocket: AbsintheSocket,
+  notifier: Notifier,
+  observer: Observer,
+): Notifier => refreshNotifier(absintheSocket, notifierObserve(notifier, observer));
 
 export default observe;

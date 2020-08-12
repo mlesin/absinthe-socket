@@ -9,6 +9,8 @@ const clearCanceled = (notifier: Notifier) => ({
 });
 
 const flushCanceled = (notifier: Notifier): Notifier =>
-  notifier.canceledObservers.length > 0 ? clearCanceled(notifyCanceled(notifier, createCancelEvent())) : notifier;
+  notifier.canceledObservers.length > 0
+    ? clearCanceled(notifyCanceled(notifier, createCancelEvent()))
+    : notifier;
 
 export default flushCanceled;

@@ -7,7 +7,8 @@ import * as ROA from 'fp-ts/lib/ReadonlyArray';
  * @param element Element to remove
  * @param array Source Array
  */
-export const arrayRemove = <E>(index: number, array: Array<E>): Array<E> => A.filterWithIndex<E>((i, _) => index !== i)(array);
+export const arrayRemove = <E>(index: number, array: Array<E>): Array<E> =>
+  A.filterWithIndex<E>((i, _) => index !== i)(array);
 
 /**
  * Returns a new ReadonlyArray with the result of having removed the specified element
@@ -15,5 +16,7 @@ export const arrayRemove = <E>(index: number, array: Array<E>): Array<E> => A.fi
  * @param element Element to remove
  * @param array Source ReadonlyArray
  */
-export const readonlyArrayRemove = <Element>(index: number, array: ReadonlyArray<Element>): ReadonlyArray<Element> =>
-  ROA.filterWithIndex<Element>((i, _) => index !== i)(array);
+export const readonlyArrayRemove = <Element>(
+  index: number,
+  array: ReadonlyArray<Element>,
+): ReadonlyArray<Element> => ROA.filterWithIndex<Element>((i, _) => index !== i)(array);

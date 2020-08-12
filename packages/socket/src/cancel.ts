@@ -14,7 +14,9 @@ const cancelQueryOrMutationSending = (absintheSocket: AbsintheSocket, notifier: 
   updateNotifiers(absintheSocket, notifierRefresh(notifierFlushCanceled(notifierCancel(notifier))));
 
 const cancelQueryOrMutationIfSending = (absintheSocket: AbsintheSocket, notifier: Notifier) =>
-  notifier.requestStatus === requestStatuses.sending ? cancelQueryOrMutationSending(absintheSocket, notifier) : absintheSocket;
+  notifier.requestStatus === requestStatuses.sending
+    ? cancelQueryOrMutationSending(absintheSocket, notifier)
+    : absintheSocket;
 
 const cancelPending = (absintheSocket: AbsintheSocket, notifier: Notifier) =>
   updateNotifiers(absintheSocket, notifierRemove(notifierFlushCanceled(notifierCancel(notifier))));
@@ -25,7 +27,9 @@ const cancelQueryOrMutation = (absintheSocket: AbsintheSocket, notifier: Notifie
     : cancelQueryOrMutationIfSending(absintheSocket, notifier);
 
 const unsubscribeIfNeeded = (absintheSocket: AbsintheSocket, notifier: Notifier) =>
-  notifier.requestStatus === requestStatuses.sent ? unsubscribe(absintheSocket, notifier) : absintheSocket;
+  notifier.requestStatus === requestStatuses.sent
+    ? unsubscribe(absintheSocket, notifier)
+    : absintheSocket;
 
 const cancelNonPendingSubscription = (absintheSocket: AbsintheSocket, notifier: Notifier) =>
   unsubscribeIfNeeded(absintheSocket, refreshNotifier(absintheSocket, notifierCancel(notifier)));

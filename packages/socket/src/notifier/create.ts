@@ -13,6 +13,7 @@ const createUsing = <V>(request: GqlRequest<V>, operationType: GqlOperationType)
   subscriptionId: '',
 });
 
-const create = <V>(request: GqlRequest<V>): Notifier => createUsing(request, getOperationType(request.operation));
+const create = <V>(request: GqlRequest<V>): Notifier =>
+  createUsing(request, getOperationType(request.operation));
 
 export default create;

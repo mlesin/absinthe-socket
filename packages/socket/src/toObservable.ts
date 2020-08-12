@@ -20,7 +20,10 @@ const getUnsubscriber = (
   unsubscribe(absintheSocket, notifier, notifier ? observer : undefined);
 };
 
-const onResult = <R>({ operationType }: Notifier, observableObserver: ZenObservable.SubscriptionObserver<R>) => (result: R) => {
+const onResult = <R>(
+  { operationType }: Notifier,
+  observableObserver: ZenObservable.SubscriptionObserver<R>,
+) => (result: R) => {
   observableObserver.next(result);
 
   if (operationType !== 'subscription') {
@@ -71,13 +74,16 @@ const toObservable = (
   absintheSocket: AbsintheSocket,
   notifier: Notifier,
   { unsubscribe, ...handlers }: Options,
-): Observable<Record<string, unknown>> =>
-  new Observable((observableObserver: ZenObservable.SubscriptionObserver<Record<string, unknown>>) => {
-    const observer = createObserver(notifier, handlers, observableObserver);
+): Observable<Record<string, unknown>> => {
+  return new Observable(
+    (subObserver: ZenObservable.SubscriptionObserver<Record<string, unknown>>) => {
+      const observer = createObserver(notifier, handlers, subObserver);
 
-    observe(absintheSocket, notifier, observer);
+      observe(absintheSocket, notifier, observer);
 
-    return unsubscribe && getUnsubscriber(absintheSocket, notifier, observer, unsubscribe);
-  });
+      return unsubscribe && getUnsubscriber(absintheSocket, notifier, observer, unsubscribe);
+    },
+  );
+};
 
 export default toObservable;

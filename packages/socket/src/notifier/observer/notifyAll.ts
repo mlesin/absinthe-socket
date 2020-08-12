@@ -22,6 +22,7 @@ const getNotifier = (handlerName: keyof Observer, payload: unknown) => (observer
 
 // const getHandlerName = ({name}: Event) => `on${name}`;
 
-const notifyAll = (observers: ReadonlyArray<Observer>, event: Event): void => observers.forEach(getNotifier(event.tag, event.payload));
+const notifyAll = (observers: ReadonlyArray<Observer>, event: Event): void =>
+  observers.forEach(getNotifier(event.tag, event.payload));
 
 export default notifyAll;

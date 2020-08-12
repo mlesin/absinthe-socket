@@ -35,18 +35,30 @@ const getSubscribeCallback = (observer) => (error, result) => {
   }
 };
 
-const subscribeWithObservable = (state, subscriptionsClient, subscriptionSentMessage, gqlRequestCompat) => ({
+const subscribeWithObservable = (
+  state,
+  subscriptionsClient,
+  subscriptionSentMessage,
+  gqlRequestCompat,
+) => ({
   subscribe: (observer: { error: Function; next: Function }) => {
     observer.next(subscriptionSentMessage);
 
-    state.activeSubscriptionId = subscriptionsClient.subscribe(gqlRequestCompat, getSubscribeCallback(observer));
+    state.activeSubscriptionId = subscriptionsClient.subscribe(
+      gqlRequestCompat,
+      getSubscribeCallback(observer),
+    );
   },
 });
 
 /**
  * Creates a Fetcher using the given arguments
  */
-const createFetcher = (apiUrl: string, subscriptionsClient: SubscriptionClient, subscriptionSentMessage: string) => {
+const createFetcher = (
+  apiUrl: string,
+  subscriptionsClient: SubscriptionClient,
+  subscriptionSentMessage: string,
+) => {
   const state = { activeSubscriptionId: undefined };
 
   return (gqlRequestCompat: GqlRequestCompat<any>) => {
@@ -56,7 +68,12 @@ const createFetcher = (apiUrl: string, subscriptionsClient: SubscriptionClient, 
 
     return getOperationType(gqlRequestCompat.query) !== 'subscription'
       ? postJson(apiUrl, gqlRequestCompat)
-      : subscribeWithObservable(state, subscriptionsClient, subscriptionSentMessage, gqlRequestCompat);
+      : subscribeWithObservable(
+          state,
+          subscriptionsClient,
+          subscriptionSentMessage,
+          gqlRequestCompat,
+        );
   };
 };
 

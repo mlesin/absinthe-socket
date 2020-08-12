@@ -30,4 +30,9 @@ export type ErrorEvent = EventWith<'onError', Error>;
 export type CancelEvent = EventWith<'onCancel', undefined>;
 export type AbortEvent = EventWith<'onAbort', Error>;
 
-export type Event = AbortEvent | CancelEvent | ErrorEvent | ResultEvent<unknown> | StartEvent<Notifier>;
+export type Event =
+  | AbortEvent
+  | CancelEvent
+  | ErrorEvent
+  | ResultEvent<unknown>
+  | StartEvent<Notifier>;

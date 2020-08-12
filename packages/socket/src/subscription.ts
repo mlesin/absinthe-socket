@@ -33,12 +33,15 @@ const createUnsubscribeError = (message: string) => new Error(`unsubscribe: ${me
 
 const dataMessageEventName = 'subscription:data';
 
-export const isDataMessage = (message: Message<unknown>): boolean => message.event === dataMessageEventName;
+export const isDataMessage = (message: Message<unknown>): boolean =>
+  message.event === dataMessageEventName;
 
 const onUnsubscribeSucceedCanceled = (absintheSocket: AbsintheSocket, notifier: Notifier) =>
   updateNotifiers(absintheSocket, notifierRemove(notifierFlushCanceled(notifier)));
 
-const onSubscribeSucceed = (absintheSocket: AbsintheSocket, notifier: Notifier) => (subscriptionId: string) => {
+const onSubscribeSucceed = (absintheSocket: AbsintheSocket, notifier: Notifier) => (
+  subscriptionId: string,
+) => {
   const subscribedNotifier = refreshNotifier(absintheSocket, {
     ...notifier,
     subscriptionId,
@@ -52,7 +55,9 @@ const onSubscribeSucceed = (absintheSocket: AbsintheSocket, notifier: Notifier) 
   }
 };
 
-const onSubscribe = (absintheSocket: AbsintheSocket, notifier: Notifier) => (response: SubscriptionResponse) => {
+const onSubscribe = (absintheSocket: AbsintheSocket, notifier: Notifier) => (
+  response: SubscriptionResponse,
+) => {
   if (response.errors) {
     onError(absintheSocket, notifier)(gqlErrorsToString(response.errors));
   } else if (response.subscriptionId) {
@@ -64,8 +69,10 @@ const onUnsubscribeSucceedActive = (absintheSocket: AbsintheSocket, notifier: No
   subscribe(absintheSocket, refreshNotifier(absintheSocket, notifierReset(notifier)));
 
 const unsubscribeHandler: NotifierPushHandler = {
-  onError: (absintheSocket, notifier) => (errorMessage) => abortNotifier(absintheSocket, notifier, createUnsubscribeError(errorMessage)),
-  onTimeout: (_absintheSocket, notifier) => () => notifierNotifyCanceled(notifier, createErrorEvent(createUnsubscribeError('timeout'))),
+  onError: (absintheSocket, notifier) => (errorMessage) =>
+    abortNotifier(absintheSocket, notifier, createUnsubscribeError(errorMessage)),
+  onTimeout: (_absintheSocket, notifier) => () =>
+    notifierNotifyCanceled(notifier, createErrorEvent(createUnsubscribeError('timeout'))),
   onSucceed: (absintheSocket, notifier) => () => {
     if (notifier.isActive) {
       onUnsubscribeSucceedActive(absintheSocket, notifier);
@@ -75,11 +82,24 @@ const unsubscribeHandler: NotifierPushHandler = {
   },
 };
 
-const pushAbsintheUnsubscribeEvent = (absintheSocket: AbsintheSocket, { request, subscriptionId }: Notifier): AbsintheSocket =>
-  pushAbsintheEvent(absintheSocket, request, unsubscribeHandler, createAbsintheUnsubscribeEvent({ subscriptionId }));
+const pushAbsintheUnsubscribeEvent = (
+  absintheSocket: AbsintheSocket,
+  { request, subscriptionId }: Notifier,
+): AbsintheSocket =>
+  pushAbsintheEvent(
+    absintheSocket,
+    request,
+    unsubscribeHandler,
+    createAbsintheUnsubscribeEvent({ subscriptionId }),
+  );
 
-export const onDataMessage = (absintheSocket: AbsintheSocket, { payload }: Message<SubscriptionPayload>): void => {
-  const notifier = absintheSocket.notifiers.find((ntf) => isDeepEqual(ntf.subscriptionId, payload.subscriptionId));
+export const onDataMessage = (
+  absintheSocket: AbsintheSocket,
+  { payload }: Message<SubscriptionPayload>,
+): void => {
+  const notifier = absintheSocket.notifiers.find((ntf) =>
+    isDeepEqual(ntf.subscriptionId, payload.subscriptionId),
+  );
 
   if (notifier) {
     notifierNotifyResultEvent(notifier, payload.result.data);

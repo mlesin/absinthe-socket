@@ -36,7 +36,12 @@ module.exports = {
       parserOptions: {
         project: ['tsconfig.json', 'packages/socket/tsconfig.json'],
       },
-      extends: ['airbnb-typescript/base', 'plugin:@typescript-eslint/recommended', 'prettier', 'prettier/@typescript-eslint'],
+      extends: [
+        'airbnb-typescript/base',
+        'plugin:@typescript-eslint/recommended',
+        'prettier',
+        'prettier/@typescript-eslint',
+      ],
       rules: {
         'default-case': ['off'],
         '@typescript-eslint/switch-exhaustiveness-check': ['error'],

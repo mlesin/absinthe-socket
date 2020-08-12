@@ -14,6 +14,9 @@ export type AbsintheUnsubscribeEvent = AbsintheEventWith<
   }
 >;
 
-export type AbsintheDocEvent<V> = AbsintheEventWith<typeof absintheEventNames.doc, GqlRequestCompat<V>>;
+export type AbsintheDocEvent<V> = AbsintheEventWith<
+  typeof absintheEventNames.doc,
+  GqlRequestCompat<V>
+>;
 
 export type AbsintheEvent = AbsintheDocEvent<unknown> | AbsintheUnsubscribeEvent;

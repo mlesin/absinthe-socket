@@ -25,4 +25,10 @@ const createAbortEvent = (payload: Error): AbortEvent => ({
   tag: 'onAbort',
 });
 
-export { createStartEvent, createResultEvent, createErrorEvent, createCancelEvent, createAbortEvent };
+export {
+  createStartEvent,
+  createResultEvent,
+  createErrorEvent,
+  createCancelEvent,
+  createAbortEvent,
+};

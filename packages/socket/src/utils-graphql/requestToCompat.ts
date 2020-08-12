@@ -22,6 +22,9 @@ import { GqlRequest, GqlRequestCompat } from './types';
  * console.log(requestToCompat({operation, variables: {userId: 10}}));
  * // {query: "...", variables: {userId: 10}}
  */
-const requestToCompat = <V>({ operation: query, variables }: GqlRequest<V>): GqlRequestCompat<V> => ({ query: print(query), variables });
+const requestToCompat = <V>({
+  operation: query,
+  variables,
+}: GqlRequest<V>): GqlRequestCompat<V> => ({ query: print(query), variables });
 
 export default requestToCompat;

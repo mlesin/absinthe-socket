@@ -22,9 +22,9 @@ const getUnsubscriber = (
 
 const onResult = <R>(
   { operationType }: Notifier,
-  observableObserver: ZenObservable.SubscriptionObserver<R>,
+  observableObserver: ZenObservable.SubscriptionObserver<Record<string, R>>,
 ) => (result: R) => {
-  observableObserver.next(result);
+  observableObserver.next({ data: result });
 
   if (operationType !== 'subscription') {
     observableObserver.complete();
